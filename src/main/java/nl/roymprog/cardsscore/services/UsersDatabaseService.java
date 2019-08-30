@@ -1,11 +1,12 @@
 package nl.roymprog.cardsscore.services;
 
-import nl.roymprog.cardsscore.models.User;
+import nl.roymprog.cardsscore.models.entity.User;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 
 @Service
 public class UsersDatabaseService {
@@ -16,7 +17,7 @@ public class UsersDatabaseService {
         return userList;
     }
 
-    public Optional<User> getUser(String id) {
+    public Optional<User> getUser(UUID id) {
         List<User> userList = getUserList();
 
         return userList.stream().parallel()
