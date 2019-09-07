@@ -1,6 +1,6 @@
 package nl.roymprog.cardsscore.services;
 
-import nl.roymprog.cardsscore.models.User;
+import nl.roymprog.cardsscore.models.response.UserResponse;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -10,27 +10,27 @@ import java.util.Optional;
 @Service
 public class UsersDatabaseService {
 
-    private List<User> userList = new ArrayList<>();
+    private List<UserResponse> UserResponseList = new ArrayList<>();
 
-    public List<User> getUserList() {
-        return userList;
+    public List<UserResponse> getUserResponseList() {
+        return UserResponseList;
     }
 
-    public Optional<User> getUser(String id) {
-        List<User> userList = getUserList();
+    public Optional<UserResponse> getUser(String id) {
+        List<UserResponse> UserResponseList = getUserResponseList();
 
-        return userList.stream().parallel()
-                .filter(user -> user.getId().equals(id))
+        return UserResponseList.stream().parallel()
+                .filter(UserResponse -> UserResponse.getId().equals(id))
                 .findAny();
     }
 
-    public User insertUser(User user) {
-        if (user == null) {
+    public UserResponse insertUser(UserResponse UserResponse) {
+        if (UserResponse == null) {
             throw new IllegalArgumentException("Cannot add null user");
         }
 
-        userList.add(user);
+        UserResponseList.add(UserResponse);
 
-        return user;
+        return UserResponse;
     }
 }
