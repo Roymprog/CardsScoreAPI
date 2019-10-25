@@ -1,71 +1,80 @@
 package nl.roymprog.cardsscore.controllers;
 
-import nl.roymprog.cardsscore.models.Game;
-import nl.roymprog.cardsscore.models.User;
-import nl.roymprog.cardsscore.services.UsersDatabaseService;
+import javassist.NotFoundException;
+import nl.roymprog.cardsscore.models.entity.UserEntity;
+import nl.roymprog.cardsscore.models.requests.UserRequest;
+import nl.roymprog.cardsscore.models.response.UserResponse;
+import nl.roymprog.cardsscore.repositories.UserDAO;
 import nl.roymprog.cardsscore.util.UuidUtil;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Controller;
+import org.springframework.http.MediaType;
+import org.springframework.web.bind.annotation.*;
 
-import java.time.LocalDateTime;
-import java.util.ArrayList;
+import javax.persistence.EntityExistsException;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
+import java.util.stream.Collectors;
 
-@Controller
+@RestController
+@RequestMapping(value = "/users", produces = MediaType.APPLICATION_JSON_VALUE)
 public class UsersController {
 
-    UsersDatabaseService usersDatabaseService;
+    private UserDAO userDAO;
 
-    GamesController gamesController;
+    ChineesPoepenController chineesPoepenController;
 
-    public UsersController(UsersDatabaseService usersDatabaseService, GamesController gamesController) {
-        this.usersDatabaseService = usersDatabaseService;
-        this.gamesController = gamesController;
+    public UsersController(UserDAO userDAO, ChineesPoepenController chineesPoepenController) {
+        this.userDAO = userDAO;
+        this.chineesPoepenController = chineesPoepenController;
     }
 
-    public User createUser(User user) {
-        if (user == null) {
-            user = new User();
+    @GetMapping
+    public List<UserResponse> getUsers() {
+        List<UserEntity> entities = userDAO.findAll();
+
+        return buildUserResponses(entities);
+    }
+
+    @PostMapping(consumes = "application/json")
+    public UserResponse register(@RequestBody UserRequest userRequest) {
+        Optional<UserEntity> entityOptional = userDAO.findByUsername(userRequest.getUsername());
+
+        if (entityOptional.isPresent()) {
+            throw new EntityExistsException("Cannot register user with this id, user already exists");
         }
 
-        Optional<User> userOptional = usersDatabaseService.getUser(user.getId());
+        UserEntity entity = new UserEntity();
+        entity.setId(UuidUtil.generateRandomId());
+        entity.setUsername(userRequest.getUsername());
 
-        if (userOptional.isPresent()) {
-            throw new IllegalArgumentException("Cannot register user with this id, user already exists");
-        }
+        userDAO.save(entity);
 
-        user.setJoinedOn(LocalDateTime.now());
-        user.setId(UuidUtil.generateRandomId());
-        user.setGames(new ArrayList<>());
-
-        return usersDatabaseService.insertUser(user);
+        return buildUserResponse(entity);
     }
 
-    public List<User> getUsers() {
-        return usersDatabaseService.getUserList();
-    }
+    @GetMapping("/{userId}")
+    public UserResponse getUser(@PathVariable String userId) throws NotFoundException {
 
-    public User getUser(String id) {
-
-        Optional<User> userOptional = usersDatabaseService.getUser(id);
+        Optional<UserEntity> userOptional = userDAO.findById(UUID.fromString(userId));
 
         if (!userOptional.isPresent()) {
-            throw new IllegalArgumentException("User could not be found for id: " + id);
+            throw new NotFoundException("User could not be found for id: " + userId);
         }
 
-        return userOptional.get();
+        return buildUserResponse(userOptional.get());
     }
 
-    public Game createGameForUser(User host) {
-        Game game = gamesController.createGame(host.getId());
-
-        host.getGames().add(game);
-
-        return game;
+    private UserResponse buildUserResponse(UserEntity entity) {
+        return new UserResponse(entity.getId().toString(),
+                entity.getJoinedOn(),
+                entity.getUsername(),
+                Collections.emptyList());
     }
 
-    public List<Game> getGames(String userId) {
-        return gamesController.getGamesForUser(userId);
+    private List<UserResponse> buildUserResponses(List<UserEntity> entities) {
+        return entities.stream()
+                .map(entity -> buildUserResponse(entity))
+                .collect(Collectors.toList());
     }
 }
