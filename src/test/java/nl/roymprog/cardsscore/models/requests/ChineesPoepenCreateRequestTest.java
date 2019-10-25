@@ -19,9 +19,9 @@ public class ChineesPoepenCreateRequestTest {
         ChineesPoepenCreateRequest req = om.readValue(input, ChineesPoepenCreateRequest.class);
 
         assertEquals(3, req.getPlayers().size());
-        assertTrue(req.getPlayers().contains("1"));
-        assertTrue(req.getPlayers().contains("2"));
-        assertTrue(req.getPlayers().contains("3"));
+        assertTrue(req.getPlayers().contains("18adb080-acae-42e8-9984-c9bf97259306"));
+        assertTrue(req.getPlayers().contains("18adb080-acae-42e8-9984-c9bf97259307"));
+        assertTrue(req.getPlayers().contains("18adb080-acae-42e8-9984-c9bf97259309"));
     }
 
     @Test

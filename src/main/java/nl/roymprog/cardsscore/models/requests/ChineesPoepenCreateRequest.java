@@ -11,4 +11,6 @@ import java.util.Set;
 public class ChineesPoepenCreateRequest {
     @NotNull
     private Set<String> players;
+    private int round;
+    private String host;
 }

@@ -1,78 +1,102 @@
 package nl.roymprog.cardsscore.controllers;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import nl.roymprog.cardsscore.businessDelegate.ChineesPoepenBusinessDelegate;
+import nl.roymprog.cardsscore.businessDelegate.ChineesPoepenBusinessDelegateImpl;
+import nl.roymprog.cardsscore.models.ChineesPoepen;
+import nl.roymprog.cardsscore.models.Game;
 import nl.roymprog.cardsscore.models.entity.ChineesPoepenEntity;
 import nl.roymprog.cardsscore.models.requests.ChineesPoepenCreateRequest;
-import nl.roymprog.cardsscore.models.requests.ChineesPoepenRequest;
-import nl.roymprog.cardsscore.models.response.ChineesPoepenResponse;
 import nl.roymprog.cardsscore.services.ChineesPoepenDbInterface;
 import nl.roymprog.cardsscore.util.UuidUtil;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.mockito.Mock;
-import org.mockito.junit.MockitoJUnitRunner;
-import org.omg.PortableServer.REQUEST_PROCESSING_POLICY_ID;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.http.MediaType;
+import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.test.web.servlet.MockMvc;
 
 import java.util.HashSet;
 import java.util.Set;
-import java.util.UUID;
 
-import static org.hamcrest.Matchers.any;
-import static org.junit.Assert.assertEquals;
-import static org.mockito.ArgumentMatchers.*;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.when;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-@RunWith(MockitoJUnitRunner.class)
+@RunWith(SpringRunner.class)
+@WebMvcTest(controllers = ChineesPoepenController.class)
 public class ChineesPoepenControllerTest {
 
-    private ChineesPoepenController controller;
+    @Autowired
+    private ObjectMapper objectMapper;
 
-    @Mock
-    private ChineesPoepenDbInterface db;
+    @Autowired
+    private MockMvc mockMvc;
 
-    private final UUID USER_ID = UuidUtil.generateRandomId();
-    private final UUID GAME_ID = UuidUtil.generateRandomId();
-    private final UUID PLAYER1 = UuidUtil.generateRandomId();
-    private final UUID PLAYER2 = UuidUtil.generateRandomId();
-    private final UUID PLAYER3 = UuidUtil.generateRandomId();
-    private Set<String> players = new HashSet<>();
-    private ChineesPoepenEntity chineesPoepenEntity;
-    private ChineesPoepenCreateRequest req;
+    @MockBean
+    private ChineesPoepenDbInterface chineesPoepenDbService;
+
+    @MockBean
+    private ChineesPoepenBusinessDelegate chineesPoepenBusinessDelegateImpl;
+
+    private final String USER_ID = UuidUtil.generateRandomId().toString();
+    private final String PLAYER1 = UuidUtil.generateRandomId().toString();
+    private final String PLAYER2 = UuidUtil.generateRandomId().toString();
+    private final String PLAYER3 = UuidUtil.generateRandomId().toString();
+    private Set<String> players;
+    private ChineesPoepenCreateRequest req = new ChineesPoepenCreateRequest();
 
     @Before
     public void setUp() {
-        controller = new ChineesPoepenController(db);
-        players.add(PLAYER1.toString());
-        players.add(PLAYER2.toString());
-        players.add(PLAYER3.toString());
-        chineesPoepenEntity = new ChineesPoepenEntity();
-        chineesPoepenEntity.setHost(USER_ID);
-        chineesPoepenEntity.setId(GAME_ID);
-        req = new ChineesPoepenCreateRequest();
+        players = new HashSet<>();
+        players.add(PLAYER1);
+        players.add(PLAYER2);
+        players.add(PLAYER3);
+        players.add(USER_ID);
+
         req.setPlayers(players);
     }
 
     @Test
-    public void newGame() {
-        when(db.createGame(anyString(), anySet(), anyInt())).thenReturn(chineesPoepenEntity);
-
-        ResponseEntity<ChineesPoepenResponse> responseEntity = controller.newGame(USER_ID.toString(), req);
-
-        assertEquals(HttpStatus.CREATED, responseEntity.getStatusCode());
+    public void newGameIsCreated() throws Exception {
+        this.mockMvc.perform(post("/users/{userId}/games", USER_ID)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(req)))
+                .andExpect(status().isCreated());
     }
 
-    @Test(expected = IllegalArgumentException.class)
-    public void newGamePlayersShort() {
-        req.setPlayers(new HashSet<>());
-        controller.newGame(USER_ID.toString(), req);
+    @Test
+    public void newGameNoPlayers() throws Exception {
+        req.setPlayers(null);
+
+        this.mockMvc.perform(post("/users/{userId}/games", USER_ID)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(req)))
+                .andExpect(status().isBadRequest());
     }
 
-    @Test(expected = IllegalArgumentException.class)
-    public void newGameDbIAException() {
-        when(db.createGame(anyString(), anySet(), anyInt())).thenThrow(IllegalArgumentException.class);
+    @Test
+    public void createGameInvalid() throws Exception {
+        when(chineesPoepenBusinessDelegateImpl.createGame(anyString(), any(ChineesPoepenCreateRequest.class))).thenThrow(IllegalArgumentException.class);
 
-        controller.newGame(USER_ID.toString(), req);
+        this.mockMvc.perform(post("/users/{userId}/games", USER_ID)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(req)))
+                .andExpect(status().isBadRequest());
     }
+
+//    @Test
+//    public void newGameDbError() throws Exception {
+//        when(chineesPoepenDbService.insertNew(any(ChineesPoepen.class))).thenThrow(RuntimeException.class);
+//
+//        this.mockMvc.perform(post("/users/{userId}/games", USER_ID)
+//                .contentType(MediaType.APPLICATION_JSON)
+//                .content(objectMapper.writeValueAsString(req)))
+//                .andExpect(status().isInternalServerError());
+//    }
 }

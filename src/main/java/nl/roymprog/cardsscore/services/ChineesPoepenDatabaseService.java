@@ -1,38 +1,45 @@
 package nl.roymprog.cardsscore.services;
 
+import lombok.extern.java.Log;
+import nl.roymprog.cardsscore.models.ChineesPoepen;
+import nl.roymprog.cardsscore.models.entity.ChineesPoepenConverter;
 import nl.roymprog.cardsscore.models.entity.ChineesPoepenEntity;
-import nl.roymprog.cardsscore.models.response.ChineesPoepenResponse;
 import nl.roymprog.cardsscore.repositories.ChineesPoepenDAO;
-import nl.roymprog.cardsscore.util.UuidUtil;
-import org.springframework.stereotype.Service;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataAccessException;
+import org.springframework.stereotype.Component;
 
-import java.util.*;
-import java.util.stream.Collectors;
+import java.util.Optional;
+import java.util.UUID;
 
-@Service
-public class ChineesPoepenDatabaseService implements ChineesPoepenDbInterface{
+@Component
+@Log
+public class ChineesPoepenDatabaseService implements ChineesPoepenDbInterface {
 
     private ChineesPoepenDAO dao;
 
+    @Autowired
     public ChineesPoepenDatabaseService(ChineesPoepenDAO dao) {
         this.dao = dao;
     }
 
     @Override
-    public ChineesPoepenEntity createGame(String hostId, Set<String> players, int round) {
-        ChineesPoepenEntity entity = new ChineesPoepenEntity();
-        entity.setId(UuidUtil.generateRandomId());
-        entity.setHost(UUID.fromString(hostId));
-        entity.setRound(1);
-
-        Set<UUID> playerIds = players.stream()
-                .map(player -> UUID.fromString(player))
-                .collect(Collectors.toSet());
-        entity.setPlayers(playerIds);
-
-        return dao.save(entity);
+    public ChineesPoepen  insertNew(ChineesPoepen cp) {
+        cp.setId(UUID.randomUUID().toString());
+        ChineesPoepenEntity entity = ChineesPoepenConverter.toEntity(cp);
+        try {
+            return ChineesPoepenConverter.toDto(dao.save(entity));
+        } catch (DataAccessException e) {
+            e.printStackTrace();
+            log.severe(e.getMessage());
+            throw new RuntimeException("Something went wrong inserting new entry in database");
+        }
     }
 
+    @Override
+    public Optional<ChineesPoepenEntity> getGame(String gameId) {
+        return dao.findById(UUID.fromString(gameId));
+    }
 
 //    List<ChineesPoepenResponse> games = new ArrayList<>();
 //

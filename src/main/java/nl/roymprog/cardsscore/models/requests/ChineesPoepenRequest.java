@@ -4,19 +4,19 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.util.List;
-import java.util.Set;
 import java.util.stream.IntStream;
 
 @Data
 @NoArgsConstructor
 public class ChineesPoepenRequest {
-    private Set<String> players;
+    private int round;
     private List<Score> scores;
 
     @Data
     public static class Score {
         String player;
-        int score;
+        int pointsCalled;
+        int pointsScored;
     }
 
     public int getTotal() {
@@ -25,7 +25,7 @@ public class ChineesPoepenRequest {
         }
 
         return this.scores.stream()
-                .flatMapToInt(score -> IntStream.of(score.score))
+                .flatMapToInt(score -> IntStream.of(score.pointsCalled))
                 .sum();
     }
 }

@@ -14,7 +14,7 @@ public class ChineesPoepenRequestTest {
         int n = 4;
         int points = 1;
         ChineesPoepenRequest.Score score = new ChineesPoepenRequest.Score();
-        score.setScore(points);
+        score.setPointsCalled(points);
         List<ChineesPoepenRequest.Score> scores = Collections.nCopies(n, score);
 
         ChineesPoepenRequest request = new ChineesPoepenRequest();

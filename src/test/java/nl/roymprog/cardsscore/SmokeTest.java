@@ -21,7 +21,7 @@ public class SmokeTest {
     UsersController usersController;
 
     @Test
-    public void contextLoads() throws Exception{
+    public void contextLoads() {
         assertThat(chineesPoepenController).isNotNull();
         assertThat(usersController).isNotNull();
     }
