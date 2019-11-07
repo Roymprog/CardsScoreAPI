@@ -4,6 +4,7 @@ import javassist.NotFoundException;
 import nl.roymprog.cardsscore.businessDelegate.ChineesPoepenBusinessDelegate;
 import nl.roymprog.cardsscore.businessDelegate.ChineesPoepenBusinessDelegateImpl;
 import nl.roymprog.cardsscore.models.ChineesPoepen;
+import nl.roymprog.cardsscore.models.entity.ChineesPoepenConverter;
 import nl.roymprog.cardsscore.models.entity.ChineesPoepenEntity;
 import nl.roymprog.cardsscore.models.requests.ChineesPoepenCreateRequest;
 import nl.roymprog.cardsscore.models.requests.ChineesPoepenRequest;
@@ -53,7 +54,7 @@ public class ChineesPoepenController {
     }
 
     @PutMapping(value = "/{gameId}", consumes = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<ChineesPoepenResponse> play(@PathVariable String userId, @PathVariable String gameId, @Valid @RequestBody ChineesPoepenRequest req) throws Exception {
+    public ResponseEntity<ChineesPoepen> play(@PathVariable String hostId, @PathVariable String gameId, @Valid @RequestBody ChineesPoepenRequest req) throws Exception {
         Optional<ChineesPoepenEntity> chineesPoepenEntityOptional = chineesPoepenDbService.getGame(gameId);
 
         if (!chineesPoepenEntityOptional.isPresent()) {
@@ -62,24 +63,16 @@ public class ChineesPoepenController {
 
         ChineesPoepenEntity chineesPoepenEntity = chineesPoepenEntityOptional.get();
 
-        if (chineesPoepenEntity.getHost().equals(UUID.fromString(userId))) {
+        if (chineesPoepenEntity.getHost().equals(UUID.fromString(hostId))) {
             throw new Exception("Not allowed to update game, host mismatch");
         }
 
-//        chineesPoepen.play();
+        ChineesPoepen cp = ChineesPoepenConverter.toDto(chineesPoepenEntity);
+        cp.setScores(req.getScores());
+        cp.setHost(hostId);
 
-        return null;
-    }
+        ChineesPoepen played = chineesPoepenBusinessDelegateImpl.playRound(cp);
 
-    private List<ChineesPoepenResponse> buildChineesPoepenResponse(Iterable<ChineesPoepenEntity> entities) {
-        List<ChineesPoepenResponse> responses = new LinkedList<>();
-        Iterator entityIterator = entities.iterator();
-
-        while (entityIterator.hasNext()) {
-            ChineesPoepenEntity entity = (ChineesPoepenEntity) entityIterator.next();
-            responses.add(new ChineesPoepenResponse(entity.getId().toString(), entity.getHost().toString()));
-        }
-
-        return responses;
+        return new ResponseEntity<>(played, HttpStatus.OK);
     }
 }

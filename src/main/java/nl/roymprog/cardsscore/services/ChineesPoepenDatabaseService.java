@@ -24,7 +24,7 @@ public class ChineesPoepenDatabaseService implements ChineesPoepenDbInterface {
     }
 
     @Override
-    public ChineesPoepen  insertNew(ChineesPoepen cp) {
+    public ChineesPoepen insertNew(ChineesPoepen cp) {
         cp.setId(UUID.randomUUID().toString());
         ChineesPoepenEntity entity = ChineesPoepenConverter.toEntity(cp);
         try {
