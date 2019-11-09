@@ -54,7 +54,8 @@ public class ChineesPoepenController {
     }
 
     @PutMapping(value = "/{gameId}", consumes = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<ChineesPoepen> play(@PathVariable String hostId, @PathVariable String gameId, @Valid @RequestBody ChineesPoepenRequest req) throws Exception {
+    public ResponseEntity<ChineesPoepen> play(@PathVariable(name="userId") String hostId, @PathVariable String gameId,
+                                              @Valid @RequestBody ChineesPoepenRequest req) throws Exception {
         Optional<ChineesPoepenEntity> chineesPoepenEntityOptional = chineesPoepenDbService.getGame(gameId);
 
         if (!chineesPoepenEntityOptional.isPresent()) {
@@ -63,8 +64,12 @@ public class ChineesPoepenController {
 
         ChineesPoepenEntity chineesPoepenEntity = chineesPoepenEntityOptional.get();
 
-        if (chineesPoepenEntity.getHost().equals(UUID.fromString(hostId))) {
-            throw new Exception("Not allowed to update game, host mismatch");
+        if (!chineesPoepenEntity.getHost().equals(UUID.fromString(hostId))) {
+            throw new IllegalAccessException("Not allowed to update game, host mismatch");
+        }
+
+        if (!req.getPlayers().equals(chineesPoepenEntity.getPlayers())) {
+            throw new IllegalArgumentException("Players do not match players registered for this game");
         }
 
         ChineesPoepen cp = ChineesPoepenConverter.toDto(chineesPoepenEntity);
@@ -72,7 +77,8 @@ public class ChineesPoepenController {
         cp.setHost(hostId);
 
         ChineesPoepen played = chineesPoepenBusinessDelegateImpl.playRound(cp);
+        ChineesPoepen saved = chineesPoepenDbService.updateGame(played);
 
-        return new ResponseEntity<>(played, HttpStatus.OK);
+        return new ResponseEntity<>(saved, HttpStatus.OK);
     }
 }

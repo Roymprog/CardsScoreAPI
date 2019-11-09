@@ -60,7 +60,7 @@ public class ChineesPoepen {
     public void setScores(List<ChineesPoepenRequest.Score> scoresList) {
         this.scores = new HashMap();
         scoresList.stream()
-                .map(score -> this.scores.put(score.getPlayer(), createScore(score.getRounds(), score.getRound())));
+                .map(score -> this.scores.put(score.getPlayer(), createScore(score.getRounds())));
     }
 
     public List<Score> getRoundScores() {
@@ -111,9 +111,9 @@ public class ChineesPoepen {
         return sum == getHandSizeForRound(round);
     }
 
-    private List<Score> createScore(List<ChineesPoepenRequest.Round> score, int round) {
+    private List<Score> createScore(List<ChineesPoepenRequest.Round> score) {
         return score.stream()
-                .map(sc -> new Score(sc.getPointsCalled(), sc.getPointsScored(), round))
+                .map(sc -> new Score(sc.getPointsCalled(), sc.getPointsScored(), sc.getRound()))
                 .collect(Collectors.toList());
     }
 

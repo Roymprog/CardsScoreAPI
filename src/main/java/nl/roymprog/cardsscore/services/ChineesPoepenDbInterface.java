@@ -9,4 +9,6 @@ public interface ChineesPoepenDbInterface {
     ChineesPoepen insertNew(ChineesPoepen chineesPoepen);
 
     Optional<ChineesPoepenEntity> getGame(String gameId);
+
+    ChineesPoepen updateGame(ChineesPoepen chineesPoepen);
 }

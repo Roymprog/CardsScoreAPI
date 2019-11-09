@@ -41,6 +41,18 @@ public class ChineesPoepenDatabaseService implements ChineesPoepenDbInterface {
         return dao.findById(UUID.fromString(gameId));
     }
 
+    @Override
+    public ChineesPoepen updateGame(ChineesPoepen chineesPoepen) {
+        ChineesPoepenEntity entity = ChineesPoepenConverter.toEntity(chineesPoepen);
+        try {
+            return ChineesPoepenConverter.toDto(dao.save(entity));
+        } catch (DataAccessException e) {
+            e.printStackTrace();
+            log.severe(e.getMessage());
+            throw new RuntimeException("Something went wrong inserting new entry in database");
+        }
+    }
+
 //    List<ChineesPoepenResponse> games = new ArrayList<>();
 //
 //    public Optional<ChineesPoepenResponse> getGame(String id) {
