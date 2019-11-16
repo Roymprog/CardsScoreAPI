@@ -68,6 +68,9 @@ public class ChineesPoepen {
     }
 
     public List<Score> getRoundScores(int round) {
+        if (this.scores == null) {
+            return Collections.emptyList();
+        }
         validateRoundNumber(round);
 
         List<Score> scoreList = new ArrayList<>();

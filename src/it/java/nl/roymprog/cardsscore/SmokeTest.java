@@ -1,7 +1,6 @@
 package nl.roymprog.cardsscore;
 
 import nl.roymprog.cardsscore.controllers.ChineesPoepenController;
-import nl.roymprog.cardsscore.controllers.UsersController;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,12 +16,8 @@ public class SmokeTest {
     @Autowired
     ChineesPoepenController chineesPoepenController;
 
-    @Autowired
-    UsersController usersController;
-
     @Test
     public void contextLoads() {
         assertThat(chineesPoepenController).isNotNull();
-        assertThat(usersController).isNotNull();
     }
 }

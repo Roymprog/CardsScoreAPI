@@ -81,4 +81,20 @@ public class ChineesPoepenController {
 
         return new ResponseEntity<>(saved, HttpStatus.OK);
     }
+
+    @GetMapping(value = "/{gameId}")
+    public ResponseEntity<ChineesPoepen> getGame(@PathVariable String gameId) throws NotFoundException {
+        Optional<ChineesPoepenEntity> chineesPoepenEntityOptional = chineesPoepenDbService.getGame(gameId);
+
+        if (!chineesPoepenEntityOptional.isPresent()) {
+            throw new NotFoundException("Could not find game with id: " + gameId);
+        }
+
+        ChineesPoepenEntity chineesPoepenEntity = chineesPoepenEntityOptional.get();
+
+        ChineesPoepen cp = ChineesPoepenConverter.toDto(chineesPoepenEntity);
+
+        return new ResponseEntity<>(cp, HttpStatus.OK);
+    }
+
 }
