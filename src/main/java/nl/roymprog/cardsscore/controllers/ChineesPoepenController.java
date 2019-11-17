@@ -68,9 +68,9 @@ public class ChineesPoepenController {
             throw new IllegalAccessException("Not allowed to update game, host mismatch");
         }
 
-        if (!req.getPlayers().equals(chineesPoepenEntity.getPlayers())) {
-            throw new IllegalArgumentException("Players do not match players registered for this game");
-        }
+//        if (!req.getPlayers().equals(chineesPoepenEntity.getPlayers())) {
+//            throw new IllegalArgumentException("Players do not match players registered for this game");
+//        }
 
         ChineesPoepen cp = ChineesPoepenConverter.toDto(chineesPoepenEntity);
         cp.setScores(req.getScores());
