@@ -128,23 +128,6 @@ public class ChineesPoepenControllerTest {
     }
 
     @Test
-    public void playGameInvalidPlayers() throws Exception {
-        ChineesPoepen cp = ChineesPoepen.builder()
-                .id(GAME_ID)
-                .host(USER_ID)
-                .players(players)
-                .build();
-        ChineesPoepenEntity entity = ChineesPoepenConverter.toEntity(cp);
-
-        when(chineesPoepenDbService.getGame(anyString())).thenReturn(Optional.of(entity));
-
-        this.mockMvc.perform(put("/users/{userId}/games/{gameId}", USER_ID, GAME_ID)
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(updateRequest)))
-                .andExpect(status().isBadRequest());
-    }
-
-    @Test
     public void playGameInvalidRound() throws Exception {
         Set<String> correctPlayers = new HashSet<>();
         correctPlayers.add("18adb080-acae-42e8-9984-c9bf97259306");
