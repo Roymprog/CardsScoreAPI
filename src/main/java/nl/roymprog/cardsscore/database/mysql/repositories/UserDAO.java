@@ -1,6 +1,6 @@
-package nl.roymprog.cardsscore.repositories;
+package nl.roymprog.cardsscore.database.mysql.repositories;
 
-import nl.roymprog.cardsscore.models.entity.UserEntity;
+import nl.roymprog.cardsscore.database.mysql.entity.UserEntity;
 import org.springframework.data.repository.PagingAndSortingRepository;
 import org.springframework.stereotype.Repository;
 

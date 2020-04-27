@@ -1,4 +1,4 @@
-//package nl.roymprog.cardsscore.models.entity;
+//package nl.roymprog.cardsscore.database.mysql.entity;
 //
 //import lombok.Data;
 //import lombok.NoArgsConstructor;

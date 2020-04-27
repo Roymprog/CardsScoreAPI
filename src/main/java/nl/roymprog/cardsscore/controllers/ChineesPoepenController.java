@@ -2,13 +2,11 @@ package nl.roymprog.cardsscore.controllers;
 
 import javassist.NotFoundException;
 import nl.roymprog.cardsscore.businessDelegate.ChineesPoepenBusinessDelegate;
-import nl.roymprog.cardsscore.businessDelegate.ChineesPoepenBusinessDelegateImpl;
 import nl.roymprog.cardsscore.models.ChineesPoepen;
-import nl.roymprog.cardsscore.models.entity.ChineesPoepenConverter;
-import nl.roymprog.cardsscore.models.entity.ChineesPoepenEntity;
+import nl.roymprog.cardsscore.database.mysql.entity.ChineesPoepenConverter;
+import nl.roymprog.cardsscore.database.mysql.entity.ChineesPoepenEntity;
 import nl.roymprog.cardsscore.models.requests.ChineesPoepenCreateRequest;
 import nl.roymprog.cardsscore.models.requests.ChineesPoepenRequest;
-import nl.roymprog.cardsscore.models.response.ChineesPoepenResponse;
 import nl.roymprog.cardsscore.services.ChineesPoepenDbInterface;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;

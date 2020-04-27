@@ -1,13 +1,9 @@
-package nl.roymprog.cardsscore.models.entity;
+package nl.roymprog.cardsscore.database.mysql.entity;
 
 import lombok.*;
-import org.hibernate.annotations.GenericGenerator;
-import org.springframework.lang.Nullable;
 
 import javax.persistence.*;
-import java.time.LocalDateTime;
 import java.util.*;
-import java.util.stream.Collectors;
 
 @NoArgsConstructor
 @AllArgsConstructor

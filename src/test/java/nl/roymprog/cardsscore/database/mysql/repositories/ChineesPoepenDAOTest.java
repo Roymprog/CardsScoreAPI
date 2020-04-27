@@ -1,6 +1,6 @@
-package nl.roymprog.cardsscore.repositories;
+package nl.roymprog.cardsscore.database.mysql.repositories;
 
-import nl.roymprog.cardsscore.models.entity.ChineesPoepenEntity;
+import nl.roymprog.cardsscore.database.mysql.entity.ChineesPoepenEntity;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -9,10 +9,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.UUID;
-
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.Assert.*;
 
 @RunWith(SpringRunner.class)
 @Transactional

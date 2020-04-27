@@ -2,9 +2,9 @@ package nl.roymprog.cardsscore.services;
 
 import lombok.extern.java.Log;
 import nl.roymprog.cardsscore.models.ChineesPoepen;
-import nl.roymprog.cardsscore.models.entity.ChineesPoepenConverter;
-import nl.roymprog.cardsscore.models.entity.ChineesPoepenEntity;
-import nl.roymprog.cardsscore.repositories.ChineesPoepenDAO;
+import nl.roymprog.cardsscore.database.mysql.entity.ChineesPoepenConverter;
+import nl.roymprog.cardsscore.database.mysql.entity.ChineesPoepenEntity;
+import nl.roymprog.cardsscore.database.mysql.repositories.ChineesPoepenDAO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Component;

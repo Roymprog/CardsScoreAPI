@@ -3,8 +3,8 @@ package nl.roymprog.cardsscore.controllers;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import nl.roymprog.cardsscore.businessDelegate.ChineesPoepenBusinessDelegate;
 import nl.roymprog.cardsscore.models.ChineesPoepen;
-import nl.roymprog.cardsscore.models.entity.ChineesPoepenConverter;
-import nl.roymprog.cardsscore.models.entity.ChineesPoepenEntity;
+import nl.roymprog.cardsscore.database.mysql.entity.ChineesPoepenConverter;
+import nl.roymprog.cardsscore.database.mysql.entity.ChineesPoepenEntity;
 import nl.roymprog.cardsscore.models.requests.ChineesPoepenCreateRequest;
 import nl.roymprog.cardsscore.models.requests.ChineesPoepenRequest;
 import nl.roymprog.cardsscore.services.ChineesPoepenDbInterface;
@@ -18,7 +18,6 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -28,7 +27,6 @@ import java.util.Set;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
-import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;

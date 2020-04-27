@@ -1,7 +1,7 @@
 package nl.roymprog.cardsscore.services;
 
 import nl.roymprog.cardsscore.models.ChineesPoepen;
-import nl.roymprog.cardsscore.models.entity.ChineesPoepenEntity;
+import nl.roymprog.cardsscore.database.mysql.entity.ChineesPoepenEntity;
 
 import java.util.Optional;
 
