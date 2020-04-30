@@ -45,6 +45,11 @@
             <scope>runtime</scope>
         </dependency>
 
+        <dependency>
+            <groupId>com.typesafe</groupId>
+            <artifactId>config</artifactId>
+            <version>1.4.0</version>
+        </dependency>
 <!--        Mongodb-->
         <dependency>
             <groupId>org.springframework.boot</groupId>
