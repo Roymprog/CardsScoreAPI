@@ -26,10 +26,6 @@ public class ChineesPoepen {
     private LocalDateTime startTime;
     private String state;
 
-    public void setId(String id) {
-        this.id = id;
-    }
-
     public void setHost(String host) {
         this.host = host;
     }

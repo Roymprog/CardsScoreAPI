@@ -1,6 +1,5 @@
 package nl.roymprog.cardsscore.controllers;
 
-import javassist.NotFoundException;
 import lombok.extern.java.Log;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -26,7 +25,7 @@ public class GlobalExceptionHandler {
         }
     }
 
-    @ExceptionHandler({IllegalArgumentException.class, MethodArgumentNotValidException.class, NotFoundException.class, IllegalAccessException.class, RuntimeException.class})
+    @ExceptionHandler({IllegalArgumentException.class, MethodArgumentNotValidException.class, IllegalAccessException.class, RuntimeException.class})
     public final ResponseEntity<ApiError> handleException(Exception e, WebRequest req) {
         if (e instanceof IllegalArgumentException ) {
             return new ResponseEntity<ApiError>(new ApiError(e.getMessage()), new HttpHeaders(), HttpStatus.BAD_REQUEST);
@@ -37,8 +36,6 @@ public class GlobalExceptionHandler {
                     manve.getBindingResult().getFieldError().getField(),
                     manve.getBindingResult().getFieldError().getDefaultMessage());
             return new ResponseEntity<ApiError>(new ApiError(message), new HttpHeaders(), HttpStatus.BAD_REQUEST);
-        } else if (e instanceof NotFoundException) {
-            return new ResponseEntity<ApiError>(new ApiError(e.getMessage()), new HttpHeaders(), HttpStatus.NOT_FOUND);
         } else if (e instanceof IllegalAccessException) {
             return new ResponseEntity<ApiError>(new ApiError(e.getMessage()), new HttpHeaders(), HttpStatus.UNAUTHORIZED);
         }

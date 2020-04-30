@@ -4,7 +4,7 @@ import nl.roymprog.cardsscore.models.ChineesPoepen;
 import nl.roymprog.cardsscore.models.requests.ChineesPoepenCreateRequest;
 
 public interface ChineesPoepenBusinessDelegate {
-    ChineesPoepen createGame(String host, ChineesPoepenCreateRequest dto);
+    ChineesPoepen createGame(ChineesPoepenCreateRequest dto);
 
     ChineesPoepen playRound(ChineesPoepen cp);
 }

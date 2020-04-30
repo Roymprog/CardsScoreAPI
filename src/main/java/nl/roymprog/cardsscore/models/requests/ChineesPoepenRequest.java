@@ -11,6 +11,7 @@ import java.util.Set;
 @Data
 @NoArgsConstructor
 public class ChineesPoepenRequest {
+    private String host;
     private List<Score> scores;
 
     @NoArgsConstructor

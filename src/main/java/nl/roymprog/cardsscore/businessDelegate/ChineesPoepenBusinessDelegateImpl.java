@@ -12,9 +12,9 @@ import java.util.List;
 @Component
 @Log
 public class ChineesPoepenBusinessDelegateImpl implements ChineesPoepenBusinessDelegate {
-    public ChineesPoepen createGame(String host, ChineesPoepenCreateRequest dto) {
+    public ChineesPoepen createGame(ChineesPoepenCreateRequest dto) {
         ChineesPoepen cp = ChineesPoepen.builder()
-                            .host(host)
+                            .host(dto.getHost())
                             .players(dto.getPlayers())
                             .round(1)
                             .startTime(LocalDateTime.now())
@@ -32,7 +32,6 @@ public class ChineesPoepenBusinessDelegateImpl implements ChineesPoepenBusinessD
         return cp;
     }
 
-    @Override
     public ChineesPoepen playRound(ChineesPoepen cp) {
         List<ChineesPoepen.Score> scoreList = cp.getRoundScores();
 

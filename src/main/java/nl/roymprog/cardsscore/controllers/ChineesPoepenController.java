@@ -1,13 +1,10 @@
 package nl.roymprog.cardsscore.controllers;
 
-import javassist.NotFoundException;
 import nl.roymprog.cardsscore.businessDelegate.ChineesPoepenBusinessDelegate;
+import nl.roymprog.cardsscore.database.ChineesPoepenDbInterface;
 import nl.roymprog.cardsscore.models.ChineesPoepen;
-import nl.roymprog.cardsscore.database.mysql.entity.ChineesPoepenConverter;
-import nl.roymprog.cardsscore.database.mysql.entity.ChineesPoepenEntity;
 import nl.roymprog.cardsscore.models.requests.ChineesPoepenCreateRequest;
 import nl.roymprog.cardsscore.models.requests.ChineesPoepenRequest;
-import nl.roymprog.cardsscore.services.ChineesPoepenDbInterface;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -15,10 +12,10 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
-import java.util.*;
+import java.util.Optional;
 
 @RestController
-@RequestMapping(value = "/users/{userId}/games", produces = MediaType.APPLICATION_JSON_VALUE)
+@RequestMapping(value = "/games", produces = MediaType.APPLICATION_JSON_VALUE)
 public class ChineesPoepenController {
 
     private ChineesPoepenDbInterface chineesPoepenDbService;
@@ -31,48 +28,27 @@ public class ChineesPoepenController {
         this.chineesPoepenBusinessDelegateImpl = chineesPoepenBusinessDelegateImpl;
     }
 
-//    @GetMapping
-//    public List<ChineesPoepenResponse> getGames(@PathVariable String userId) {
-//        return buildChineesPoepenResponse(chineesPoepenDAO.findByHost(UUID.fromString(userId)));
-//    }
-//
-//    @GetMapping("/{id}")
-//    public ChineesPoepenResponse getGame(@PathVariable String userId, @PathVariable String id) {
-//        ChineesPoepenEntity entity = chineesPoepenDAO.getOne(UUID.fromString(id));
-//
-//        return new ChineesPoepenResponse(entity.getId().toString(), entity.getHost().toString());
-//    }
-
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<ChineesPoepen> newGame(@PathVariable String userId, @Valid @RequestBody ChineesPoepenCreateRequest req) {
-        ChineesPoepen cp = chineesPoepenBusinessDelegateImpl.createGame(userId, req);
+    public ResponseEntity<ChineesPoepen> newGame(@Valid @RequestBody ChineesPoepenCreateRequest req) {
+        ChineesPoepen cp = chineesPoepenBusinessDelegateImpl.createGame(req);
         ChineesPoepen response = chineesPoepenDbService.insertNew(cp);
 
         return new ResponseEntity<>(response, HttpStatus.CREATED);
     }
 
     @PutMapping(value = "/{gameId}", consumes = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<ChineesPoepen> play(@PathVariable(name="userId") String hostId, @PathVariable String gameId,
+    public ResponseEntity<ChineesPoepen> play(@PathVariable String gameId,
                                               @Valid @RequestBody ChineesPoepenRequest req) throws Exception {
-        Optional<ChineesPoepenEntity> chineesPoepenEntityOptional = chineesPoepenDbService.getGame(gameId);
+        Optional<ChineesPoepen> chineesPoepenEntityOptional = chineesPoepenDbService.getGame(gameId);
 
         if (!chineesPoepenEntityOptional.isPresent()) {
-            throw new NotFoundException("Could not find game with id: " + gameId);
+            throw new IllegalArgumentException("Could not find game with id: " + gameId);
         }
 
-        ChineesPoepenEntity chineesPoepenEntity = chineesPoepenEntityOptional.get();
+        ChineesPoepen cp = chineesPoepenEntityOptional.get();
 
-        if (!chineesPoepenEntity.getHost().equals(UUID.fromString(hostId))) {
-            throw new IllegalAccessException("Not allowed to update game, host mismatch");
-        }
-
-//        if (!req.getPlayers().equals(chineesPoepenEntity.getPlayers())) {
-//            throw new IllegalArgumentException("Players do not match players registered for this game");
-//        }
-
-        ChineesPoepen cp = ChineesPoepenConverter.toDto(chineesPoepenEntity);
         cp.setScores(req.getScores());
-        cp.setHost(hostId);
+        cp.setHost(req.getHost());
 
         ChineesPoepen played = chineesPoepenBusinessDelegateImpl.playRound(cp);
         ChineesPoepen saved = chineesPoepenDbService.updateGame(played);
@@ -81,16 +57,14 @@ public class ChineesPoepenController {
     }
 
     @GetMapping(value = "/{gameId}")
-    public ResponseEntity<ChineesPoepen> getGame(@PathVariable String gameId) throws NotFoundException {
-        Optional<ChineesPoepenEntity> chineesPoepenEntityOptional = chineesPoepenDbService.getGame(gameId);
+    public ResponseEntity<ChineesPoepen> getGame(@PathVariable String gameId) {
+        Optional<ChineesPoepen> chineesPoepenEntityOptional = chineesPoepenDbService.getGame(gameId);
 
         if (!chineesPoepenEntityOptional.isPresent()) {
-            throw new NotFoundException("Could not find game with id: " + gameId);
+            throw new IllegalArgumentException("Could not find game with id: " + gameId);
         }
 
-        ChineesPoepenEntity chineesPoepenEntity = chineesPoepenEntityOptional.get();
-
-        ChineesPoepen cp = ChineesPoepenConverter.toDto(chineesPoepenEntity);
+        ChineesPoepen cp = chineesPoepenEntityOptional.get();
 
         return new ResponseEntity<>(cp, HttpStatus.OK);
     }

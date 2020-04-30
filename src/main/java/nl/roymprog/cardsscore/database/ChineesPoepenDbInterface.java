@@ -1,14 +1,13 @@
-package nl.roymprog.cardsscore.services;
+package nl.roymprog.cardsscore.database;
 
 import nl.roymprog.cardsscore.models.ChineesPoepen;
-import nl.roymprog.cardsscore.database.mysql.entity.ChineesPoepenEntity;
 
 import java.util.Optional;
 
 public interface ChineesPoepenDbInterface {
     ChineesPoepen insertNew(ChineesPoepen chineesPoepen);
 
-    Optional<ChineesPoepenEntity> getGame(String gameId);
+    Optional<ChineesPoepen> getGame(String gameId);
 
     ChineesPoepen updateGame(ChineesPoepen chineesPoepen);
 }
