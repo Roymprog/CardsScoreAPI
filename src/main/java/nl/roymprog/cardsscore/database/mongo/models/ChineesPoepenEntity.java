@@ -7,10 +7,10 @@ import java.util.Map;
 
 @RequiredArgsConstructor
 public class ChineesPoepenEntity {
-    @Id
-    public String id;
+  @Id
+  public String id;
 
-    public final String host;
-    public final int round;
-    public final Map<String, ChineesPoepenScore> players;
+  public final String host;
+  public final int round;
+  public final Map<String, ChineesPoepenScore> players;
 }

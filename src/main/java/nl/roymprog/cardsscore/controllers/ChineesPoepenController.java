@@ -18,55 +18,55 @@ import java.util.Optional;
 @RequestMapping(value = "/games", produces = MediaType.APPLICATION_JSON_VALUE)
 public class ChineesPoepenController {
 
-    private ChineesPoepenDbInterface chineesPoepenDbService;
-    private ChineesPoepenBusinessDelegate chineesPoepenBusinessDelegateImpl;
+  private ChineesPoepenDbInterface chineesPoepenDbService;
+  private ChineesPoepenBusinessDelegate chineesPoepenBusinessDelegateImpl;
 
-    @Autowired
-    public ChineesPoepenController(ChineesPoepenDbInterface chineesPoepenDbService,
-                                   ChineesPoepenBusinessDelegate chineesPoepenBusinessDelegateImpl) {
-        this.chineesPoepenDbService = chineesPoepenDbService;
-        this.chineesPoepenBusinessDelegateImpl = chineesPoepenBusinessDelegateImpl;
+  @Autowired
+  public ChineesPoepenController(ChineesPoepenDbInterface chineesPoepenDbService,
+                                 ChineesPoepenBusinessDelegate chineesPoepenBusinessDelegateImpl) {
+    this.chineesPoepenDbService = chineesPoepenDbService;
+    this.chineesPoepenBusinessDelegateImpl = chineesPoepenBusinessDelegateImpl;
+  }
+
+  @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
+  public ResponseEntity<ChineesPoepen> newGame(@Valid @RequestBody ChineesPoepenCreateRequest req) {
+    ChineesPoepen cp = chineesPoepenBusinessDelegateImpl.createGame(req);
+    ChineesPoepen response = chineesPoepenDbService.insertNew(cp);
+
+    return new ResponseEntity<>(response, HttpStatus.CREATED);
+  }
+
+  @PutMapping(value = "/{gameId}", consumes = MediaType.APPLICATION_JSON_VALUE)
+  public ResponseEntity<ChineesPoepen> play(@PathVariable String gameId,
+                                            @Valid @RequestBody ChineesPoepenRequest req) throws Exception {
+    Optional<ChineesPoepen> chineesPoepenEntityOptional = chineesPoepenDbService.getGame(gameId);
+
+    if (!chineesPoepenEntityOptional.isPresent()) {
+      throw new IllegalArgumentException("Could not find game with id: " + gameId);
     }
 
-    @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<ChineesPoepen> newGame(@Valid @RequestBody ChineesPoepenCreateRequest req) {
-        ChineesPoepen cp = chineesPoepenBusinessDelegateImpl.createGame(req);
-        ChineesPoepen response = chineesPoepenDbService.insertNew(cp);
+    ChineesPoepen cp = chineesPoepenEntityOptional.get();
 
-        return new ResponseEntity<>(response, HttpStatus.CREATED);
+    cp.setScores(req.getScores());
+    cp.setHost(req.getHost());
+
+    ChineesPoepen played = chineesPoepenBusinessDelegateImpl.playRound(cp);
+    ChineesPoepen saved = chineesPoepenDbService.updateGame(played);
+
+    return new ResponseEntity<>(saved, HttpStatus.OK);
+  }
+
+  @GetMapping(value = "/{gameId}")
+  public ResponseEntity<ChineesPoepen> getGame(@PathVariable String gameId) {
+    Optional<ChineesPoepen> chineesPoepenEntityOptional = chineesPoepenDbService.getGame(gameId);
+
+    if (!chineesPoepenEntityOptional.isPresent()) {
+      throw new IllegalArgumentException("Could not find game with id: " + gameId);
     }
 
-    @PutMapping(value = "/{gameId}", consumes = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<ChineesPoepen> play(@PathVariable String gameId,
-                                              @Valid @RequestBody ChineesPoepenRequest req) throws Exception {
-        Optional<ChineesPoepen> chineesPoepenEntityOptional = chineesPoepenDbService.getGame(gameId);
+    ChineesPoepen cp = chineesPoepenEntityOptional.get();
 
-        if (!chineesPoepenEntityOptional.isPresent()) {
-            throw new IllegalArgumentException("Could not find game with id: " + gameId);
-        }
-
-        ChineesPoepen cp = chineesPoepenEntityOptional.get();
-
-        cp.setScores(req.getScores());
-        cp.setHost(req.getHost());
-
-        ChineesPoepen played = chineesPoepenBusinessDelegateImpl.playRound(cp);
-        ChineesPoepen saved = chineesPoepenDbService.updateGame(played);
-
-        return new ResponseEntity<>(saved, HttpStatus.OK);
-    }
-
-    @GetMapping(value = "/{gameId}")
-    public ResponseEntity<ChineesPoepen> getGame(@PathVariable String gameId) {
-        Optional<ChineesPoepen> chineesPoepenEntityOptional = chineesPoepenDbService.getGame(gameId);
-
-        if (!chineesPoepenEntityOptional.isPresent()) {
-            throw new IllegalArgumentException("Could not find game with id: " + gameId);
-        }
-
-        ChineesPoepen cp = chineesPoepenEntityOptional.get();
-
-        return new ResponseEntity<>(cp, HttpStatus.OK);
-    }
+    return new ResponseEntity<>(cp, HttpStatus.OK);
+  }
 
 }

@@ -10,9 +10,9 @@ import java.util.List;
 @AllArgsConstructor
 public class UserResponse {
 
-    String id;
-    LocalDateTime joinedOn;
-    String username;
-    List<ChineesPoepenResponse> games;
+  String id;
+  LocalDateTime joinedOn;
+  String username;
+  List<ChineesPoepenResponse> games;
 
 }

@@ -7,15 +7,15 @@ import java.util.Optional;
 
 @Component
 public class ChineesPoepenMongoDb implements ChineesPoepenDbInterface {
-    public ChineesPoepen insertNew(ChineesPoepen chineesPoepen) {
-        return chineesPoepen;
-    }
+  public ChineesPoepen insertNew(ChineesPoepen chineesPoepen) {
+    return chineesPoepen;
+  }
 
-    public Optional<ChineesPoepen> getGame(String gameId) {
-        return Optional.empty();
-    }
+  public Optional<ChineesPoepen> getGame(String gameId) {
+    return Optional.empty();
+  }
 
-    public ChineesPoepen updateGame(ChineesPoepen chineesPoepen) {
-        return chineesPoepen;
-    }
+  public ChineesPoepen updateGame(ChineesPoepen chineesPoepen) {
+    return chineesPoepen;
+  }
 }

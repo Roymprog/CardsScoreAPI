@@ -5,9 +5,9 @@ import nl.roymprog.cardsscore.models.ChineesPoepen;
 import java.util.Optional;
 
 public interface ChineesPoepenDbInterface {
-    ChineesPoepen insertNew(ChineesPoepen chineesPoepen);
+  ChineesPoepen insertNew(ChineesPoepen chineesPoepen);
 
-    Optional<ChineesPoepen> getGame(String gameId);
+  Optional<ChineesPoepen> getGame(String gameId);
 
-    ChineesPoepen updateGame(ChineesPoepen chineesPoepen);
+  ChineesPoepen updateGame(ChineesPoepen chineesPoepen);
 }

@@ -9,8 +9,8 @@ import java.util.Set;
 @Data
 @NoArgsConstructor
 public class ChineesPoepenCreateRequest {
-    @NotNull
-    private Set<String> players;
-    private int round;
-    private String host;
+  @NotNull
+  private Set<String> players;
+  private int round;
+  private String host;
 }

@@ -13,36 +13,34 @@ import org.springframework.web.context.request.WebRequest;
 @Log
 public class GlobalExceptionHandler {
 
-    private class ApiError {
-        public String getMessage() {
-            return message;
-        }
-
-        private final String message;
-
-        private ApiError(String message) {
-            this.message = message;
-        }
+  private class ApiError {
+    public String getMessage() {
+      return message;
     }
 
-    @ExceptionHandler({IllegalArgumentException.class, MethodArgumentNotValidException.class, IllegalAccessException.class, RuntimeException.class})
-    public final ResponseEntity<ApiError> handleException(Exception e, WebRequest req) {
-        if (e instanceof IllegalArgumentException ) {
-            return new ResponseEntity<ApiError>(new ApiError(e.getMessage()), new HttpHeaders(), HttpStatus.BAD_REQUEST);
-        }
-        else if (e instanceof MethodArgumentNotValidException) {
-            MethodArgumentNotValidException manve = (MethodArgumentNotValidException) e;
-            String message = String.format("Invalid property, %s %s",
-                    manve.getBindingResult().getFieldError().getField(),
-                    manve.getBindingResult().getFieldError().getDefaultMessage());
-            return new ResponseEntity<ApiError>(new ApiError(message), new HttpHeaders(), HttpStatus.BAD_REQUEST);
-        } else if (e instanceof IllegalAccessException) {
-            return new ResponseEntity<ApiError>(new ApiError(e.getMessage()), new HttpHeaders(), HttpStatus.UNAUTHORIZED);
-        }
-        else {
-            e.printStackTrace();
-            log.severe(e.getMessage());
-            return new ResponseEntity<>(new ApiError("Something went wrong"), new HttpHeaders(), HttpStatus.INTERNAL_SERVER_ERROR);
-        }
+    private final String message;
+
+    private ApiError(String message) {
+      this.message = message;
     }
+  }
+
+  @ExceptionHandler({IllegalArgumentException.class, MethodArgumentNotValidException.class, IllegalAccessException.class, RuntimeException.class})
+  public final ResponseEntity<ApiError> handleException(Exception e, WebRequest req) {
+    if (e instanceof IllegalArgumentException) {
+      return new ResponseEntity<ApiError>(new ApiError(e.getMessage()), new HttpHeaders(), HttpStatus.BAD_REQUEST);
+    } else if (e instanceof MethodArgumentNotValidException) {
+      MethodArgumentNotValidException manve = (MethodArgumentNotValidException) e;
+      String message = String.format("Invalid property, %s %s",
+              manve.getBindingResult().getFieldError().getField(),
+              manve.getBindingResult().getFieldError().getDefaultMessage());
+      return new ResponseEntity<ApiError>(new ApiError(message), new HttpHeaders(), HttpStatus.BAD_REQUEST);
+    } else if (e instanceof IllegalAccessException) {
+      return new ResponseEntity<ApiError>(new ApiError(e.getMessage()), new HttpHeaders(), HttpStatus.UNAUTHORIZED);
+    } else {
+      e.printStackTrace();
+      log.severe(e.getMessage());
+      return new ResponseEntity<>(new ApiError("Something went wrong"), new HttpHeaders(), HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+  }
 }

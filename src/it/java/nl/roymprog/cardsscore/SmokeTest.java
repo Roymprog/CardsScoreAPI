@@ -13,11 +13,11 @@ import static org.assertj.core.api.Assertions.assertThat;
 @SpringBootTest
 public class SmokeTest {
 
-    @Autowired
-    ChineesPoepenController chineesPoepenController;
+  @Autowired
+  ChineesPoepenController chineesPoepenController;
 
-    @Test
-    public void contextLoads() {
-        assertThat(chineesPoepenController).isNotNull();
-    }
+  @Test
+  public void contextLoads() {
+    assertThat(chineesPoepenController).isNotNull();
+  }
 }

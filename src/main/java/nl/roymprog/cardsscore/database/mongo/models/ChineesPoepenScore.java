@@ -6,5 +6,5 @@ import java.util.Map;
 
 @RequiredArgsConstructor
 public class ChineesPoepenScore {
-    private final Map<Integer, ChineesPoepenRoundScore> score;
+  private final Map<Integer, ChineesPoepenRoundScore> score;
 }
