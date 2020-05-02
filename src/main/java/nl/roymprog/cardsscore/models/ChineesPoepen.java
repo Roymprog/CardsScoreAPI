@@ -34,12 +34,6 @@ public class ChineesPoepen {
     return ++this.round;
   }
 
-  public Set<UUID> getPlayers() {
-    return this.players.stream()
-            .map(id -> UUID.fromString(id))
-            .collect(Collectors.toSet());
-  }
-
   public Optional<Integer> getScore(String playerId) {
     List<Score> playerScores = this.scores.get(playerId);
 

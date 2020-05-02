@@ -6,7 +6,6 @@ import nl.roymprog.cardsscore.database.ChineesPoepenDbInterface;
 import nl.roymprog.cardsscore.models.ChineesPoepen;
 import nl.roymprog.cardsscore.models.requests.ChineesPoepenCreateRequest;
 import nl.roymprog.cardsscore.models.requests.ChineesPoepenRequest;
-import nl.roymprog.cardsscore.util.UuidUtil;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -22,6 +21,7 @@ import java.io.InputStream;
 import java.util.HashSet;
 import java.util.Optional;
 import java.util.Set;
+import java.util.UUID;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
@@ -46,11 +46,11 @@ public class ChineesPoepenControllerTest {
   @MockBean
   private ChineesPoepenBusinessDelegate chineesPoepenBusinessDelegateImpl;
 
-  private final String USER_ID = UuidUtil.generateRandomId().toString();
-  private final String GAME_ID = UuidUtil.generateRandomId().toString();
-  private final String PLAYER1 = UuidUtil.generateRandomId().toString();
-  private final String PLAYER2 = UuidUtil.generateRandomId().toString();
-  private final String PLAYER3 = UuidUtil.generateRandomId().toString();
+  private final String USER_ID = UUID.randomUUID().toString();
+  private final String GAME_ID = UUID.randomUUID().toString();
+  private final String PLAYER1 = UUID.randomUUID().toString();
+  private final String PLAYER2 = UUID.randomUUID().toString();
+  private final String PLAYER3 = UUID.randomUUID().toString();
   private Set<String> players;
   private ChineesPoepenCreateRequest createRequest = new ChineesPoepenCreateRequest();
   private ChineesPoepenRequest updateRequest;
