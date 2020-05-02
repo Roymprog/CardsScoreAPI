@@ -1,11 +1,11 @@
 package nl.roymprog.cardsscore.database.mongo.models;
 
-import lombok.RequiredArgsConstructor;
+import lombok.Builder;
 import org.springframework.data.annotation.Id;
 
 import java.util.Map;
 
-@RequiredArgsConstructor
+@Builder
 public class ChineesPoepenEntity {
   @Id
   public String id;

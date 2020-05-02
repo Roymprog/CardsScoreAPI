@@ -9,35 +9,29 @@ import de.flapdoodle.embed.mongo.config.MongodConfigBuilder;
 import de.flapdoodle.embed.mongo.config.Net;
 import de.flapdoodle.embed.mongo.distribution.Version;
 import de.flapdoodle.embed.process.runtime.Network;
+import nl.roymprog.cardsscore.database.ChineesPoepenMongoDb;
 import nl.roymprog.cardsscore.database.mongo.MongoDbConfig;
-import nl.roymprog.cardsscore.database.mongo.models.ChineesPoepenEntity;
-import nl.roymprog.cardsscore.database.mongo.models.ChineesPoepenRoundScore;
-import nl.roymprog.cardsscore.database.mongo.models.ChineesPoepenScore;
+import nl.roymprog.cardsscore.models.ChineesPoepen;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.data.mongo.DataMongoTest;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import java.io.IOException;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.stream.Stream;
-
-import static org.assertj.core.api.Assertions.assertThat;
+import java.util.*;
 
 @SpringBootTest
 @ContextConfiguration
 public class ChineesPoepenRepositoryTest {
   @Autowired
-  private ChineesPoepenRepository repository;
+  private ChineesPoepenMongoDb db;
 
   @Autowired
   private MongoDbConfig mongoDbConfig;
+
+  private static final MongodStarter starter = MongodStarter.getDefaultInstance();
 
   private MongodExecutable _mongodExe;
   private MongodProcess _mongod;
@@ -46,7 +40,6 @@ public class ChineesPoepenRepositoryTest {
 
   @BeforeClass
   public void setUp() throws IOException {
-    MongodStarter starter = MongodStarter.getDefaultInstance();
 
     IMongodConfig mongodConfig = new MongodConfigBuilder()
             .version(Version.Main.PRODUCTION)
@@ -73,26 +66,31 @@ public class ChineesPoepenRepositoryTest {
     String host2 = "host2";
     String host3 = "host3";
 
-    ChineesPoepenRoundScore roundScore = new ChineesPoepenRoundScore(6, 1, 1);
-    Map<Integer, ChineesPoepenRoundScore> roundScores = new HashMap<>();
-    roundScores.put(1, roundScore);
-    ChineesPoepenScore score = new ChineesPoepenScore(roundScores);
-    Map<String, ChineesPoepenScore> players = new HashMap<>();
+    ChineesPoepen.Score roundScore = new ChineesPoepen.Score(6, 1, 1);
+    List<ChineesPoepen.Score> score = new ArrayList<>();
+    score.add(roundScore);
+    Map<String, List<ChineesPoepen.Score>> players = new HashMap<>();
+    players.put(host, score);
     players.put(host1, score);
     players.put(host2, score);
     players.put(host3, score);
 
+
     // given
-    ChineesPoepenEntity entity = new ChineesPoepenEntity(host, 0, players);
+    ChineesPoepen cp =
+            ChineesPoepen.builder()
+              .host(host)
+              .round(1)
+              .scores(players)
+              .build();
 
     // when
-    ChineesPoepenEntity eut = repository.save(entity);
+    ChineesPoepen saved = db.insertNew(cp);
 
     // then
-    Stream<ChineesPoepenEntity> es = repository.findByHost(host);
-    assertThat(es).extracting("players")
-            .hasSize(1);
+    Optional<ChineesPoepen> optionalCp = db.getGame(saved.getId());
+    assert optionalCp.isPresent();
 
-    assertThat(repository.findById(eut.id).get().players).hasSize(3);
+//    assertThat(repository.findById(eut.id).get().players).hasSize(3);
   }
 }

@@ -9,5 +9,4 @@ import java.util.stream.Stream;
 public interface ChineesPoepenRepository extends MongoRepository<ChineesPoepenEntity, String> {
   Optional<ChineesPoepenEntity> findById(String id);
 
-  Stream<ChineesPoepenEntity> findByHost(String host);
 }

@@ -116,6 +116,7 @@ public class ChineesPoepen {
             .collect(Collectors.toList());
   }
 
+  @Getter
   public static class Score {
     public Score(int pointsCalled, int pointsScored, int round) {
       this.pointsCalled = pointsCalled;
@@ -124,11 +125,17 @@ public class ChineesPoepen {
       this.round = round;
     }
 
-    int pointsCalled;
-    int pointsScored;
-    int round;
+    public Score(int pointsCalled, int pointsScored, int score, int round) {
+      this.pointsCalled = pointsCalled;
+      this.pointsScored = pointsScored;
+      this.round = round;
+      this.score = score;
+    }
 
+    final int pointsCalled;
+    final int pointsScored;
     int score;
+    final int round;
 
     public int getScore() {
       int diff = Math.abs(this.pointsCalled - this.pointsScored);

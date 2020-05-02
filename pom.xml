@@ -50,6 +50,14 @@
             <artifactId>config</artifactId>
             <version>1.4.0</version>
         </dependency>
+
+        <!-- https://mvnrepository.com/artifact/com.google.guava/guava -->
+        <dependency>
+            <groupId>com.google.guava</groupId>
+            <artifactId>guava</artifactId>
+            <version>29.0-jre</version>
+        </dependency>
+
         <!--        Mongodb-->
         <dependency>
             <groupId>org.springframework.boot</groupId>
@@ -65,6 +73,12 @@
             <artifactId>junit-jupiter-api</artifactId>
             <version>5.2.0</version>
             <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>de.flapdoodle.embed</groupId>
+            <artifactId>de.flapdoodle.embed.process</artifactId>
+            <version>2.1.2</version>
+            <scope>compile</scope>
         </dependency>
     </dependencies>
 
