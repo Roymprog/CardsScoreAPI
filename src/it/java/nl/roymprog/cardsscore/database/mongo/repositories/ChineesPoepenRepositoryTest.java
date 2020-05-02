@@ -13,6 +13,7 @@ import nl.roymprog.cardsscore.database.ChineesPoepenMongoDb;
 import nl.roymprog.cardsscore.database.mongo.MongoDbConfig;
 import nl.roymprog.cardsscore.models.ChineesPoepen;
 import org.junit.AfterClass;
+import org.junit.Assert;
 import org.junit.BeforeClass;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -38,6 +39,15 @@ public class ChineesPoepenRepositoryTest {
 
   private MongoClient _mongo;
 
+  private final String host = "host";
+  private final String host1 = "host1";
+  private final String host2 = "host2";
+  private final String host3 = "host3";
+
+  private final ChineesPoepen.Score roundScore = new ChineesPoepen.Score(6, 1, 1);
+  private final List<ChineesPoepen.Score> score = new ArrayList<>();
+  private final Map<String, List<ChineesPoepen.Score>> players = new HashMap<>();
+
   @BeforeClass
   public void setUp() throws IOException {
 
@@ -51,6 +61,11 @@ public class ChineesPoepenRepositoryTest {
 
     _mongo = new MongoClient(mongodConfig.net().getBindIp(), mongodConfig.net().getPort());
 
+    score.add(roundScore);
+    players.put(host, score);
+    players.put(host1, score);
+    players.put(host2, score);
+    players.put(host3, score);
   }
 
   @AfterClass
@@ -60,22 +75,7 @@ public class ChineesPoepenRepositoryTest {
   }
 
   @Test
-  public void test() {
-    String host = "host";
-    String host1 = "host1";
-    String host2 = "host2";
-    String host3 = "host3";
-
-    ChineesPoepen.Score roundScore = new ChineesPoepen.Score(6, 1, 1);
-    List<ChineesPoepen.Score> score = new ArrayList<>();
-    score.add(roundScore);
-    Map<String, List<ChineesPoepen.Score>> players = new HashMap<>();
-    players.put(host, score);
-    players.put(host1, score);
-    players.put(host2, score);
-    players.put(host3, score);
-
-
+  public void insertTest() {
     // given
     ChineesPoepen cp =
             ChineesPoepen.builder()
@@ -90,7 +90,27 @@ public class ChineesPoepenRepositoryTest {
     // then
     Optional<ChineesPoepen> optionalCp = db.getGame(saved.getId());
     assert optionalCp.isPresent();
+  }
 
-//    assertThat(repository.findById(eut.id).get().players).hasSize(3);
+  @Test
+  public void updateTest() {
+    // given
+    ChineesPoepen cp =
+            ChineesPoepen.builder()
+                    .host(host)
+                    .round(1)
+                    .scores(players)
+                    .build();
+    ChineesPoepen saved = db.insertNew(cp);
+    saved.toNextRound();
+
+    // when
+    ChineesPoepen updated = db.updateGame(saved);
+
+    // then
+    Optional<ChineesPoepen> optionalCp = db.getGame(updated.getId());
+    assert optionalCp.isPresent();
+    ChineesPoepen sut = optionalCp.get();
+    Assert.assertEquals(2, sut.getRound());
   }
 }

@@ -17,7 +17,7 @@ public class ChineesPoepenMongoDb implements ChineesPoepenDbInterface {
 
   public ChineesPoepen insertNew(ChineesPoepen chineesPoepen) {
     ChineesPoepenEntity entity = ChineesPoepenConverter.toEntity(chineesPoepen);
-    ChineesPoepenEntity savedEntity = repository.save(entity);
+    ChineesPoepenEntity savedEntity = repository.insert(entity);
     return ChineesPoepenConverter.toDto(savedEntity);
   }
 
@@ -27,6 +27,10 @@ public class ChineesPoepenMongoDb implements ChineesPoepenDbInterface {
   }
 
   public ChineesPoepen updateGame(ChineesPoepen chineesPoepen) {
-    return chineesPoepen;
+    ChineesPoepenEntity entity = ChineesPoepenConverter.toEntity(chineesPoepen);
+    return getGame(entity.id)
+            .map(game -> repository.save(entity))
+            .map(ChineesPoepenConverter::toDto)
+            .orElseThrow(() -> new IllegalArgumentException(String.format("Game not found with id: %s", chineesPoepen.getId())));
   }
 }
