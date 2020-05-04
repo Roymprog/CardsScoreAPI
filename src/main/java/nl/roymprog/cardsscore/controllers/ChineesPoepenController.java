@@ -60,7 +60,7 @@ public class ChineesPoepenController {
     chineesPoepenBusinessDelegateImpl.validateRound(scores, req.getRound());
 
     Map<String, ChineesPoepen.Score> scm = Maps.transformValues(scoreMap, sc -> chineesPoepenBusinessDelegateImpl.calculateScore(sc, req.getRound()));
-    cp.addScores(scm);
+    cp.addScores(scm, req.getRound());
 
     ChineesPoepen saved = chineesPoepenDbService.updateGame(cp);
 

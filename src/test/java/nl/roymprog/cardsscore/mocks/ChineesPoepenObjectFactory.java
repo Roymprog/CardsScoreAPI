@@ -17,7 +17,7 @@ public class ChineesPoepenObjectFactory {
             .players(PlayersObjectFactory.getPlayers())
             .round(1)
             .id(CHINEESPOEPEN_ID)
-            .scores(ScoresObjectFactory.getRoundScore())
+            .scores(ScoresObjectFactory.getRoundScores())
             .build();
   }
 

@@ -5,10 +5,10 @@ import java.util.Set;
 import java.util.UUID;
 
 public class PlayersObjectFactory {
-  public static String PLAYER_1 = UUID.randomUUID().toString();
-  public static String PLAYER_2 = UUID.randomUUID().toString();
-  public static String PLAYER_3 = UUID.randomUUID().toString();
-  public static String PLAYER_4 = UUID.randomUUID().toString();
+  public static String PLAYER_1 = "18adb080-acae-42e8-9984-c9bf97259301";
+  public static String PLAYER_2 = "18adb080-acae-42e8-9984-c9bf97259306";
+  public static String PLAYER_3 = "18adb080-acae-42e8-9984-c9bf97259307";
+  public static String PLAYER_4 = "18adb080-acae-42e8-9984-c9bf97259309";
 
   public static Set<String> getPlayers() {
     Set<String> players = new HashSet<>();
@@ -24,7 +24,7 @@ public class PlayersObjectFactory {
     Set<String> players = new HashSet<>();
     players.add(PLAYER_1);
     players.add(PLAYER_2);
-    players.add("PLAYER_3");
+    players.add(PLAYER_3);
 
     return players;
   }

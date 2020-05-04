@@ -12,6 +12,7 @@ import de.flapdoodle.embed.process.runtime.Network;
 import nl.roymprog.cardsscore.database.ChineesPoepenMongoDb;
 import nl.roymprog.cardsscore.database.mongo.MongoDbConfig;
 import nl.roymprog.cardsscore.mocks.MockFactory;
+import nl.roymprog.cardsscore.mocks.ScoresObjectFactory;
 import nl.roymprog.cardsscore.models.ChineesPoepen;
 import org.junit.AfterClass;
 import org.junit.Assert;
@@ -23,6 +24,8 @@ import org.springframework.test.context.ContextConfiguration;
 
 import java.io.IOException;
 import java.util.*;
+
+import static nl.roymprog.cardsscore.mocks.ScoresObjectFactory.getRoundScore;
 
 @SpringBootTest
 @ContextConfiguration
@@ -81,8 +84,8 @@ public class ChineesPoepenRepositoryTest {
     ChineesPoepen cp = MockFactory.newChineesPoepen();
 
     ChineesPoepen saved = db.insertNew(cp);
-    saved.toNextRound();
-
+    int newRound = 2;
+    saved.addScores(getRoundScore(),newRound);
     // when
     ChineesPoepen updated = db.updateGame(saved);
 
@@ -90,6 +93,6 @@ public class ChineesPoepenRepositoryTest {
     Optional<ChineesPoepen> optionalCp = db.getGame(updated.getId());
     assert optionalCp.isPresent();
     ChineesPoepen sut = optionalCp.get();
-    Assert.assertEquals(2, sut.getRound());
+    Assert.assertEquals(newRound, sut.getRound());
   }
 }

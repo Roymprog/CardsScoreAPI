@@ -28,10 +28,6 @@ public class ChineesPoepen {
   private LocalDateTime startTime;
   private String state;
 
-  public int toNextRound() {
-    return ++this.round;
-  }
-
   public Optional<Integer> getScore(String playerId) {
     List<Score> playerScores = this.scores.get(playerId);
 
@@ -52,9 +48,20 @@ public class ChineesPoepen {
               .collect(Collectors.toList());
   }
 
-  public void addScores(Map<String, Score> score ) {
-    score.entrySet().stream()
-      .forEach(e -> scores.get(e.getKey()).add(e.getValue()));
+  public void addScores(Map<String, Score> score , int round) {
+    if (round == this.getRound()) {
+      score.entrySet().stream()
+        .forEach(e -> scores.get(e.getKey()).add(e.getValue()));
+    } else if (round < this.getRound()) {
+      score.entrySet().stream()
+              .forEach(e -> scores.get(e.getKey()).set(round - 1, e.getValue()));
+    } else {
+      throw new IllegalArgumentException(
+              String.format("Set rounds in order, round %d is not allowed, current round is %d", round, getRound())
+      );
+    }
+
+    this.round = round + 1;
   }
 
   @Getter

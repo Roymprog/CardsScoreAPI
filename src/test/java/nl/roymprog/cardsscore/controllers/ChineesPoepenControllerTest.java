@@ -3,6 +3,7 @@ package nl.roymprog.cardsscore.controllers;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import nl.roymprog.cardsscore.businessDelegate.ChineesPoepenBusinessDelegate;
 import nl.roymprog.cardsscore.database.ChineesPoepenDbInterface;
+import nl.roymprog.cardsscore.mocks.ChineesPoepenObjectFactory;
 import nl.roymprog.cardsscore.models.ChineesPoepen;
 import nl.roymprog.cardsscore.models.requests.ChineesPoepenCreateRequest;
 import nl.roymprog.cardsscore.models.requests.ChineesPoepenRequest;
@@ -131,16 +132,12 @@ public class ChineesPoepenControllerTest {
     correctPlayers.add("18adb080-acae-42e8-9984-c9bf97259307");
     correctPlayers.add("18adb080-acae-42e8-9984-c9bf97259308");
     correctPlayers.add("18adb080-acae-42e8-9984-c9bf97259309");
-    ChineesPoepen cp = ChineesPoepen.builder()
-            .id(GAME_ID)
-            .host(USER_ID)
-            .players(correctPlayers)
-            .round(1)
-            .build();
+    ChineesPoepen cp = ChineesPoepenObjectFactory.getChineesPoepen();
 
     when(chineesPoepenDbService.getGame(anyString())).thenReturn(Optional.of(cp));
     doNothing().when(chineesPoepenBusinessDelegateImpl).validateRound(anyList() ,anyInt());
     when(chineesPoepenDbService.updateGame(any(ChineesPoepen.class))).thenReturn(cp);
+    when(chineesPoepenDbService.getGame(anyString())).thenReturn(Optional.of(cp));
 
     this.mockMvc.perform(put("/games/{gameId}", USER_ID, GAME_ID)
             .contentType(MediaType.APPLICATION_JSON)

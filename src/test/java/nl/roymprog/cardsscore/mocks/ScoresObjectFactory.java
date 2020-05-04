@@ -1,11 +1,12 @@
 package nl.roymprog.cardsscore.mocks;
 
+import com.google.common.collect.Maps;
 import nl.roymprog.cardsscore.models.ChineesPoepen;
 
 import java.util.*;
 
 public class ScoresObjectFactory {
-  public static Map<String, List<ChineesPoepen.Score>> getRoundScore() {
+  public static Map<String, List<ChineesPoepen.Score>> getRoundScores() {
     Map<String, List<ChineesPoepen.Score>> scores = new HashMap<>();
 
     List<ChineesPoepen.Score> scoresList = new ArrayList<>();
@@ -22,6 +23,10 @@ public class ScoresObjectFactory {
     scores.put(PlayersObjectFactory.PLAYER_4, scoresList);
 
     return scores;
+  }
+
+  public static Map<String, ChineesPoepen.Score> getRoundScore() {
+    return Maps.transformValues(getRoundScores(), scores -> scores.get(0));
   }
 
   public static Map<String, List<ChineesPoepen.Score>> getInvalidScoredScore() {
