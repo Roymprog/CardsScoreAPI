@@ -1,44 +1,25 @@
 {
-  "scores": [
-    {
-      "player": "18adb080-acae-42e8-9984-c9bf97259306",
-      "rounds": [
-        {
-          "round": 1,
-          "pointsCalled": 0,
-          "pointsScored": 1
-        }
-      ]
+  "host": "roy",
+  "round": 1,
+  "scores": {
+    "18adb080-acae-42e8-9984-c9bf97259301": {
+      "pointsCalled": 0,
+      "pointsScored": 0
     },
-    {
-      "player": "18adb080-acae-42e8-9984-c9bf97259307",
-      "rounds": [
-        {
-          "round": 1,
-          "pointsCalled": 0,
-          "pointsScored": 0
-        }
-      ]
+    "18adb080-acae-42e8-9984-c9bf97259307": {
+      "pointsCalled": 0,
+      "pointsScored": 0
+
     },
-    {
-      "player": "18adb080-acae-42e8-9984-c9bf97259308",
-      "rounds": [
-        {
-          "round": 1,
-          "pointsCalled": 0,
-          "pointsScored": 0
-        }
-      ]
+    "18adb080-acae-42e8-9984-c9bf97259309": {
+      "pointsCalled": 0,
+      "pointsScored": 0
+
     },
-    {
-      "player": "18adb080-acae-42e8-9984-c9bf97259309",
-      "rounds": [
-        {
-          "round": 1,
-          "pointsCalled": 0,
-          "pointsScored": 0
-        }
-      ]
+    "18adb080-acae-42e8-9984-c9bf97259306": {
+      "pointsCalled": 0,
+      "pointsScored": 1
+
     }
-  ]
+  }
 }

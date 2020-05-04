@@ -18,14 +18,10 @@ import org.springframework.test.web.servlet.MockMvc;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.HashSet;
-import java.util.Optional;
-import java.util.Set;
-import java.util.UUID;
+import java.util.*;
 
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyString;
-import static org.mockito.Mockito.when;
+import static org.mockito.ArgumentMatchers.*;
+import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -120,7 +116,7 @@ public class ChineesPoepenControllerTest {
             .build();
 
     when(chineesPoepenDbService.getGame(anyString())).thenReturn(Optional.of(cp));
-    when(chineesPoepenBusinessDelegateImpl.playRound(any(ChineesPoepen.class))).thenThrow(IllegalArgumentException.class);
+    doThrow(IllegalArgumentException.class).when(chineesPoepenBusinessDelegateImpl).validateRound(anyList(), anyInt());
 
     this.mockMvc.perform(put("/games/{gameId}", USER_ID, GAME_ID)
             .contentType(MediaType.APPLICATION_JSON)
@@ -141,10 +137,9 @@ public class ChineesPoepenControllerTest {
             .players(correctPlayers)
             .round(1)
             .build();
-    cp.setScores(updateRequest.getScores());
 
     when(chineesPoepenDbService.getGame(anyString())).thenReturn(Optional.of(cp));
-    when(chineesPoepenBusinessDelegateImpl.playRound(any(ChineesPoepen.class))).thenReturn(cp);
+    doNothing().when(chineesPoepenBusinessDelegateImpl).validateRound(anyList() ,anyInt());
     when(chineesPoepenDbService.updateGame(any(ChineesPoepen.class))).thenReturn(cp);
 
     this.mockMvc.perform(put("/games/{gameId}", USER_ID, GAME_ID)

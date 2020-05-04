@@ -1,5 +1,6 @@
 package nl.roymprog.cardsscore.controllers;
 
+import com.google.common.collect.Maps;
 import nl.roymprog.cardsscore.businessDelegate.ChineesPoepenBusinessDelegate;
 import nl.roymprog.cardsscore.database.ChineesPoepenDbInterface;
 import nl.roymprog.cardsscore.models.ChineesPoepen;
@@ -12,7 +13,10 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import java.util.List;
+import java.util.Map;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping(value = "/games", produces = MediaType.APPLICATION_JSON_VALUE)
@@ -47,11 +51,18 @@ public class ChineesPoepenController {
 
     ChineesPoepen cp = chineesPoepenEntityOptional.get();
 
-    cp.setScores(req.getScores());
-    cp.setHost(req.getHost());
+    Map<String, ChineesPoepen.Score> scoreMap = Maps.transformValues(req.getScores(),
+            score -> new ChineesPoepen.Score(score.getPointsCalled(), score.getPointsScored(), cp.getRound())
+    );
 
-    ChineesPoepen played = chineesPoepenBusinessDelegateImpl.playRound(cp);
-    ChineesPoepen saved = chineesPoepenDbService.updateGame(played);
+    List<ChineesPoepen.Score> scores = scoreMap.values().stream()
+            .collect(Collectors.toList());
+    chineesPoepenBusinessDelegateImpl.validateRound(scores, req.getRound());
+
+    Map<String, ChineesPoepen.Score> scm = Maps.transformValues(scoreMap, sc -> chineesPoepenBusinessDelegateImpl.calculateScore(sc, req.getRound()));
+    cp.addScores(scm);
+
+    ChineesPoepen saved = chineesPoepenDbService.updateGame(cp);
 
     return new ResponseEntity<>(saved, HttpStatus.OK);
   }

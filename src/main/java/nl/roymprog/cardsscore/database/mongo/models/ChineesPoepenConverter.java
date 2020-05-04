@@ -3,6 +3,7 @@ package nl.roymprog.cardsscore.database.mongo.models;
 import com.google.common.collect.Maps;
 import nl.roymprog.cardsscore.models.ChineesPoepen;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -35,21 +36,26 @@ public class ChineesPoepenConverter {
   }
 
   private static ChineesPoepenScore convertEntityRounds(List<ChineesPoepen.Score> score) {
-    Map<Integer, ChineesPoepen.Score> scoreMap = Maps.uniqueIndex(score, ChineesPoepen.Score::getRound);
-    Map<Integer, ChineesPoepenRoundScore> cpScoreMap = Maps.transformValues(scoreMap, ChineesPoepenConverter::convertRoundScores);
-    return new ChineesPoepenScore(cpScoreMap);
+    Map<Integer, ChineesPoepen.Score> scoreMap = new HashMap<>();
+    for (int i = 0; i < score.size(); i ++ ) {
+      scoreMap.put(i, score.get(i));
+    }
+    return new ChineesPoepenScore(Maps.transformValues(scoreMap, ChineesPoepenConverter::convertRoundScores));
+//    Map<Integer, ChineesPoepen.Score> scoreMap = Maps.uniqueIndex(score, ChineesPoepen.Score::getRound);
+//    Map<Integer, ChineesPoepenRoundScore> cpScoreMap = Maps.transformValues(scoreMap, ChineesPoepenConverter::convertRoundScores);
+//    return new ChineesPoepenScore(cpScoreMap);
   }
 
   private static List<ChineesPoepen.Score> toScoreList(ChineesPoepenScore cps) {
-    return cps.getScore().entrySet()
+    return cps.getScore().values()
           .stream()
           .sorted()
-          .map(e -> convertRoundScores(e.getValue(), e.getKey()))
+          .map(ChineesPoepenConverter::convertRoundScores)
           .collect(Collectors.toList());
   }
 
-  private static ChineesPoepen.Score convertRoundScores(ChineesPoepenRoundScore cps, int round) {
-    return new ChineesPoepen.Score(cps.getClaimed(), cps.getWon(), cps.getPoints(), round);
+  private static ChineesPoepen.Score convertRoundScores(ChineesPoepenRoundScore cps) {
+    return new ChineesPoepen.Score(cps.getClaimed(), cps.getWon(), cps.getPoints());
   }
 
   private static ChineesPoepenRoundScore convertRoundScores(ChineesPoepen.Score score) {

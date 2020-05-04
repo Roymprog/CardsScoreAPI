@@ -1,5 +1,8 @@
-package nl.roymprog.cardsscore.database.mongo.models;
+package nl.roymprog.cardsscore.mocks;
 
+import nl.roymprog.cardsscore.database.mongo.models.ChineesPoepenEntity;
+import nl.roymprog.cardsscore.database.mongo.models.ChineesPoepenRoundScore;
+import nl.roymprog.cardsscore.database.mongo.models.ChineesPoepenScore;
 import nl.roymprog.cardsscore.models.ChineesPoepen;
 
 import java.util.*;
@@ -11,6 +14,14 @@ public class MockFactory {
   private static final String host3 = "host3";
   private static final String gameId = "id";
 
+  private final static Set<String> players = new HashSet<>();
+
+  static {
+    players.add(host);
+    players.add(host1);
+    players.add(host2);
+    players.add(host3);
+  }
 
   public static ChineesPoepen newChineesPoepen() {
     ChineesPoepen.Score roundScore = new ChineesPoepen.Score(6, 1, 1);
@@ -23,13 +34,6 @@ public class MockFactory {
     scores.put(host2, score);
     scores.put(host3, score);
 
-    Set<String> players = new HashSet<>();
-
-    players.add(host);
-    players.add(host1);
-    players.add(host2);
-    players.add(host3);
-
     return ChineesPoepen
             .builder()
               .host(host)
@@ -39,8 +43,27 @@ public class MockFactory {
               .build();
   }
 
+  public static ChineesPoepen newChineesPoepenInvalidScoresCalled() {
+    return ChineesPoepen
+            .builder()
+            .host(host)
+            .round(1)
+            .players(players)
+            .scores(ScoresObjectFactory.getInvalidCalledScore())
+            .build();
+  }
+
+  public static ChineesPoepen newChineesPoepenInvalidScoresScored() {
+    return ChineesPoepen
+            .builder()
+            .host(host)
+            .round(1)
+            .players(players)
+            .scores(ScoresObjectFactory.getInvalidScoredScore())
+            .build();
+  }
+
   public static ChineesPoepenEntity newChineesPoepenEntity() {
-    ChineesPoepen.Score roundScore = new ChineesPoepen.Score(6, 1, 1);
     Map<Integer, ChineesPoepenRoundScore> scores = new HashMap<>();
     ChineesPoepenScore score = new ChineesPoepenScore(scores);
     Map<String, ChineesPoepenScore> players = new HashMap<>();
@@ -58,4 +81,5 @@ public class MockFactory {
             .players(players)
             .build();
   }
+
 }

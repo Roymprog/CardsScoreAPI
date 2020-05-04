@@ -1,5 +1,6 @@
 package nl.roymprog.cardsscore.database.mongo.models;
 
+import nl.roymprog.cardsscore.mocks.MockFactory;
 import nl.roymprog.cardsscore.models.ChineesPoepen;
 import org.junit.Assert;
 import org.junit.Test;

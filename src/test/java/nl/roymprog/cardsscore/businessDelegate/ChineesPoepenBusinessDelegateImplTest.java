@@ -1,61 +1,48 @@
 package nl.roymprog.cardsscore.businessDelegate;
 
+import com.google.common.collect.Maps;
+import nl.roymprog.cardsscore.mocks.ChineesPoepenObjectFactory;
+import nl.roymprog.cardsscore.mocks.MockFactory;
+import nl.roymprog.cardsscore.mocks.PlayersObjectFactory;
 import nl.roymprog.cardsscore.models.ChineesPoepen;
-import nl.roymprog.cardsscore.models.requests.ChineesPoepenObjectFactory;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
 
-import java.util.Collections;
 import java.util.List;
+import java.util.Map;
+import java.util.Optional;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.fail;
-import static org.mockito.Mockito.when;
 
 @RunWith(MockitoJUnitRunner.class)
 public class ChineesPoepenBusinessDelegateImplTest {
 
-  @Mock
-  ChineesPoepen cpMock;
-
-  @Mock
-  List<ChineesPoepen.Score> listMock;
-
   ChineesPoepenBusinessDelegateImpl sut = new ChineesPoepenBusinessDelegateImpl();
+
 
   @Test
   public void playRound() {
     ChineesPoepen cp = ChineesPoepenObjectFactory.getChineesPoepen();
-    int round = cp.getRound();
 
-    cp = sut.playRound(cp);
-
-    assertEquals(round + 1, cp.getRound());
-    // @Todo: Tests new scores
+    playRound(cp);
   }
 
   @Test(expected = IllegalArgumentException.class)
   public void playRoundIncompleteScores() {
-    when(cpMock.getRoundScores()).thenReturn(Collections.emptyList());
+    ChineesPoepen cp = MockFactory.newChineesPoepen();
 
-    sut.playRound(cpMock);
+    playRound(cp);
   }
 
   @Test
   public void playRoundInvalidScoresCalled() {
-    int ROUND = 1;
-
-    when(cpMock.getRoundScores()).thenReturn(listMock);
-    when(listMock.size()).thenReturn(ChineesPoepen.NUMBER_OF_PLAYERS);
-    when(cpMock.roundScoresCalledValid()).thenReturn(false);
-    when(cpMock.getRound()).thenReturn(ROUND);
-
+    ChineesPoepen cp = MockFactory.newChineesPoepenInvalidScoresCalled();
     try {
-      sut.playRound(cpMock);
+      playRound(cp);
     } catch (IllegalArgumentException e) {
-      assertEquals(String.format("Sum of called cannot equal hand size for round %d", ROUND), e.getMessage());
+      assertEquals(String.format("Sum of called cannot equal hand size for round %d", cp.getRound()), e.getMessage());
       return;
     }
 
@@ -64,18 +51,11 @@ public class ChineesPoepenBusinessDelegateImplTest {
 
   @Test
   public void playRoundInvalidScoresScored() {
-    int ROUND = 1;
-
-    when(cpMock.getRoundScores()).thenReturn(listMock);
-    when(listMock.size()).thenReturn(ChineesPoepen.NUMBER_OF_PLAYERS);
-    when(cpMock.roundScoresScoredValid()).thenReturn(false);
-    when(cpMock.roundScoresCalledValid()).thenReturn(true);
-    when(cpMock.getRound()).thenReturn(ROUND);
-
+    ChineesPoepen cp = MockFactory.newChineesPoepenInvalidScoresScored();
     try {
-      sut.playRound(cpMock);
+      playRound(cp);
     } catch (IllegalArgumentException e) {
-      assertEquals(String.format("Sum of scored points has to equal hand size for round %d", ROUND), e.getMessage());
+      assertEquals(String.format("Sum of scored points has to equal hand size for round %d", cp.getRound()), e.getMessage());
       return;
     }
 
@@ -86,8 +66,24 @@ public class ChineesPoepenBusinessDelegateImplTest {
   public void playFullGame() {
     ChineesPoepen cp = ChineesPoepenObjectFactory.getChineesPoepenFullGame();
 //      simulate playing x amount of rounds
-    for (int i = 0; i < ChineesPoepen.NUMBER_OF_ROUNDS; i++) {
-      sut.playRound(cp);
+    for (int i = 1; i <= ChineesPoepen.NUMBER_OF_ROUNDS; i++) {
+      sut.validateRound(cp.getScores(i), i);
     }
+
+    Map<String, List<ChineesPoepen.Score>> players = Maps.transformValues(cp.getScores(), scores -> sut.calculateScores(scores));
+    ChineesPoepen result = ChineesPoepen.builder().scores(players).build();
+
+    Optional<Integer> score = result.getScore(PlayersObjectFactory.PLAYER_1);
+    assertEquals(63, score.get().intValue());
+    score = result.getScore(PlayersObjectFactory.PLAYER_2);
+    assertEquals(31, score.get().intValue());
+    score = result.getScore(PlayersObjectFactory.PLAYER_3);
+    assertEquals(43, score.get().intValue());
+    score = result.getScore(PlayersObjectFactory.PLAYER_4);
+    assertEquals(51, score.get().intValue());
+  }
+
+  private void playRound(ChineesPoepen cp ) {
+    sut.validateRound(cp.getScores(cp.getRound()), cp.getRound());
   }
 }

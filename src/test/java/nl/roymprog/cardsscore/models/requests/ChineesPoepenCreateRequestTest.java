@@ -3,7 +3,6 @@ package nl.roymprog.cardsscore.models.requests;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.Test;
 
-import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 
@@ -18,7 +17,8 @@ public class ChineesPoepenCreateRequestTest {
     InputStream input = getClass().getResourceAsStream("/fixtures/ChineesPoepenCreateRequest/valid.json");
     ChineesPoepenCreateRequest req = om.readValue(input, ChineesPoepenCreateRequest.class);
 
-    assertEquals(3, req.getPlayers().size());
+    assertEquals(4, req.getPlayers().size());
+    assertTrue(req.getPlayers().contains("18adb080-acae-42e8-9984-c9bf97259301"));
     assertTrue(req.getPlayers().contains("18adb080-acae-42e8-9984-c9bf97259306"));
     assertTrue(req.getPlayers().contains("18adb080-acae-42e8-9984-c9bf97259307"));
     assertTrue(req.getPlayers().contains("18adb080-acae-42e8-9984-c9bf97259309"));

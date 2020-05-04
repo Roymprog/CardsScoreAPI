@@ -1,4 +1,4 @@
-package nl.roymprog.cardsscore.models.requests;
+package nl.roymprog.cardsscore.mocks;
 
 import nl.roymprog.cardsscore.models.ChineesPoepen;
 

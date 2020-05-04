@@ -1,4 +1,4 @@
-package nl.roymprog.cardsscore.models.requests;
+package nl.roymprog.cardsscore.mocks;
 
 import java.util.HashSet;
 import java.util.Set;

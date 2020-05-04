@@ -11,7 +11,7 @@ import de.flapdoodle.embed.mongo.distribution.Version;
 import de.flapdoodle.embed.process.runtime.Network;
 import nl.roymprog.cardsscore.database.ChineesPoepenMongoDb;
 import nl.roymprog.cardsscore.database.mongo.MongoDbConfig;
-import nl.roymprog.cardsscore.database.mongo.models.MockFactory;
+import nl.roymprog.cardsscore.mocks.MockFactory;
 import nl.roymprog.cardsscore.models.ChineesPoepen;
 import org.junit.AfterClass;
 import org.junit.Assert;
