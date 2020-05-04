@@ -54,7 +54,7 @@ public class ChineesPoepen {
 
   public void addScores(Map<String, Score> score ) {
     score.entrySet().stream()
-      .map(e -> scores.get(e.getKey()).add(e.getValue()));
+      .forEach(e -> scores.get(e.getKey()).add(e.getValue()));
   }
 
   @Getter

@@ -9,4 +9,8 @@ import java.util.Map;
 @Getter
 public class ChineesPoepenScore {
   private final Map<Integer, ChineesPoepenRoundScore> score;
+
+  public ChineesPoepenRoundScore getRoundScore(int i) {
+    return score.get(i);
+  }
 }

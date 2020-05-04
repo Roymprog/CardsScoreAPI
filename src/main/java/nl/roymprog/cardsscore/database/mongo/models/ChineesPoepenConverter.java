@@ -7,6 +7,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 import static java.util.Map.Entry;
 
@@ -41,17 +42,12 @@ public class ChineesPoepenConverter {
       scoreMap.put(i, score.get(i));
     }
     return new ChineesPoepenScore(Maps.transformValues(scoreMap, ChineesPoepenConverter::convertRoundScores));
-//    Map<Integer, ChineesPoepen.Score> scoreMap = Maps.uniqueIndex(score, ChineesPoepen.Score::getRound);
-//    Map<Integer, ChineesPoepenRoundScore> cpScoreMap = Maps.transformValues(scoreMap, ChineesPoepenConverter::convertRoundScores);
-//    return new ChineesPoepenScore(cpScoreMap);
   }
 
   private static List<ChineesPoepen.Score> toScoreList(ChineesPoepenScore cps) {
-    return cps.getScore().values()
-          .stream()
-          .sorted()
-          .map(ChineesPoepenConverter::convertRoundScores)
-          .collect(Collectors.toList());
+    return IntStream.range(0, cps.getScore().size())
+            .mapToObj(i -> ChineesPoepenConverter.convertRoundScores(cps.getRoundScore(i)))
+            .collect(Collectors.toList());
   }
 
   private static ChineesPoepen.Score convertRoundScores(ChineesPoepenRoundScore cps) {

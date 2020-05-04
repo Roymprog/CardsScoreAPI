@@ -9,7 +9,6 @@ import java.util.*;
 @Data
 @NoArgsConstructor
 public class ChineesPoepenRequest {
-  private String host;
   private int round;
   private Map<String, Score> scores;
 

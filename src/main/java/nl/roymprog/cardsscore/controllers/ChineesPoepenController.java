@@ -43,13 +43,13 @@ public class ChineesPoepenController {
   @PutMapping(value = "/{gameId}", consumes = MediaType.APPLICATION_JSON_VALUE)
   public ResponseEntity<ChineesPoepen> play(@PathVariable String gameId,
                                             @Valid @RequestBody ChineesPoepenRequest req) throws Exception {
-    Optional<ChineesPoepen> chineesPoepenEntityOptional = chineesPoepenDbService.getGame(gameId);
+    Optional<ChineesPoepen> chineesPoepenOptional = chineesPoepenDbService.getGame(gameId);
 
-    if (!chineesPoepenEntityOptional.isPresent()) {
+    if (!chineesPoepenOptional.isPresent()) {
       throw new IllegalArgumentException("Could not find game with id: " + gameId);
     }
 
-    ChineesPoepen cp = chineesPoepenEntityOptional.get();
+    ChineesPoepen cp = chineesPoepenOptional.get();
 
     Map<String, ChineesPoepen.Score> scoreMap = Maps.transformValues(req.getScores(),
             score -> new ChineesPoepen.Score(score.getPointsCalled(), score.getPointsScored(), cp.getRound())
