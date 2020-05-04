@@ -3,13 +3,11 @@ package nl.roymprog.cardsscore.database.mongo.models;
 import com.google.common.collect.Maps;
 import nl.roymprog.cardsscore.models.ChineesPoepen;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
-import java.util.stream.IntStream;
 
-import static java.util.Map.*;
+import static java.util.Map.Entry;
 
 public class ChineesPoepenConverter {
   public static ChineesPoepen toDto(ChineesPoepenEntity entity) {
@@ -17,6 +15,7 @@ public class ChineesPoepenConverter {
             .id(entity.id)
             .round(entity.round)
             .host(entity.host)
+            .players(entity.players.keySet())
             .scores(entity.players
                     .entrySet()
                     .stream()

@@ -1,25 +1,34 @@
 package nl.roymprog.cardsscore.businessDelegate;
 
+import com.google.common.collect.Maps;
 import lombok.extern.java.Log;
+import nl.roymprog.cardsscore.database.mongo.models.ChineesPoepenRoundScore;
+import nl.roymprog.cardsscore.database.mongo.models.ChineesPoepenScore;
 import nl.roymprog.cardsscore.models.ChineesPoepen;
 import nl.roymprog.cardsscore.models.requests.ChineesPoepenCreateRequest;
 import org.springframework.stereotype.Component;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @Component
 @Log
 public class ChineesPoepenBusinessDelegateImpl implements ChineesPoepenBusinessDelegate {
   public ChineesPoepen createGame(ChineesPoepenCreateRequest dto) {
+    Map<String, List<ChineesPoepen.Score>> scores = Maps.toMap(dto.getPlayers(),
+              player -> new ArrayList<>()
+            );
+
     ChineesPoepen cp = ChineesPoepen.builder()
             .host(dto.getHost())
             .players(dto.getPlayers())
             .round(1)
             .startTime(LocalDateTime.now())
             .state("CREATED")
-            .scores(new HashMap<>())
+            .scores(scores)
             .build();
 
     // TODO: allow for determining dealer in backend

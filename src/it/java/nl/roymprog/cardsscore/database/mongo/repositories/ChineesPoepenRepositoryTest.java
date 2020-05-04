@@ -11,6 +11,7 @@ import de.flapdoodle.embed.mongo.distribution.Version;
 import de.flapdoodle.embed.process.runtime.Network;
 import nl.roymprog.cardsscore.database.ChineesPoepenMongoDb;
 import nl.roymprog.cardsscore.database.mongo.MongoDbConfig;
+import nl.roymprog.cardsscore.database.mongo.models.MockFactory;
 import nl.roymprog.cardsscore.models.ChineesPoepen;
 import org.junit.AfterClass;
 import org.junit.Assert;
@@ -39,15 +40,6 @@ public class ChineesPoepenRepositoryTest {
 
   private MongoClient _mongo;
 
-  private final String host = "host";
-  private final String host1 = "host1";
-  private final String host2 = "host2";
-  private final String host3 = "host3";
-
-  private final ChineesPoepen.Score roundScore = new ChineesPoepen.Score(6, 1, 1);
-  private final List<ChineesPoepen.Score> score = new ArrayList<>();
-  private final Map<String, List<ChineesPoepen.Score>> players = new HashMap<>();
-
   @BeforeClass
   public void setUp() throws IOException {
 
@@ -61,11 +53,6 @@ public class ChineesPoepenRepositoryTest {
 
     _mongo = new MongoClient(mongodConfig.net().getBindIp(), mongodConfig.net().getPort());
 
-    score.add(roundScore);
-    players.put(host, score);
-    players.put(host1, score);
-    players.put(host2, score);
-    players.put(host3, score);
   }
 
   @AfterClass
@@ -76,13 +63,7 @@ public class ChineesPoepenRepositoryTest {
 
   @Test
   public void insertTest() {
-    // given
-    ChineesPoepen cp =
-            ChineesPoepen.builder()
-              .host(host)
-              .round(1)
-              .scores(players)
-              .build();
+    ChineesPoepen cp = MockFactory.newChineesPoepen();
 
     // when
     ChineesPoepen saved = db.insertNew(cp);
@@ -90,17 +71,15 @@ public class ChineesPoepenRepositoryTest {
     // then
     Optional<ChineesPoepen> optionalCp = db.getGame(saved.getId());
     assert optionalCp.isPresent();
+    ChineesPoepen fetched = optionalCp.get();
+    Assert.assertEquals(cp.getPlayers(), fetched.getPlayers());
   }
 
   @Test
   public void updateTest() {
     // given
-    ChineesPoepen cp =
-            ChineesPoepen.builder()
-                    .host(host)
-                    .round(1)
-                    .scores(players)
-                    .build();
+    ChineesPoepen cp = MockFactory.newChineesPoepen();
+
     ChineesPoepen saved = db.insertNew(cp);
     saved.toNextRound();
 
