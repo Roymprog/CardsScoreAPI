@@ -15,7 +15,7 @@ public class ChineesPoepenConverterTest {
     Assert.assertEquals(entity.id, cp.getId());
     Assert.assertEquals(entity.host, cp.getHost());
     Assert.assertEquals(entity.round, cp.getRound());
-    Assert.assertEquals(entity.players.keySet(), cp.getPlayers());
+    Assert.assertEquals(entity.scores.keySet(), cp.getPlayers());
   }
 
   @Test
@@ -26,7 +26,7 @@ public class ChineesPoepenConverterTest {
     Assert.assertEquals(null, entity.id);
     Assert.assertEquals(cp.getHost(), entity.host);
     Assert.assertEquals(cp.getRound(), entity.round);
-    Assert.assertEquals(cp.getPlayers(), entity.players.keySet());
+    Assert.assertEquals(cp.getPlayers(), entity.scores.keySet());
 
   }
 }

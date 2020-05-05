@@ -9,10 +9,6 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 public class MockFactory {
-  private static final String host1 = "host1";
-  private static final String host = "host";
-  private static final String host2 = "host2";
-  private static final String host3 = "host3";
   private static final String gameId = "id";
 
   public static ChineesPoepen newChineesPoepen() {
@@ -25,7 +21,7 @@ public class MockFactory {
 
     return ChineesPoepen
             .builder()
-              .host(host)
+              .host(PlayersObjectFactory.PLAYER_1)
               .round(1)
               .players(PlayersObjectFactory.getPlayers())
               .scores(scores)
@@ -35,7 +31,7 @@ public class MockFactory {
   public static ChineesPoepen newChineesPoepenInvalidScoresCalled() {
     return ChineesPoepen
             .builder()
-            .host(host)
+            .host(PlayersObjectFactory.PLAYER_1)
             .round(1)
             .players(PlayersObjectFactory.getPlayers())
             .scores(ScoresObjectFactory.getInvalidCalledScore())
@@ -45,7 +41,7 @@ public class MockFactory {
   public static ChineesPoepen newChineesPoepenInvalidScoresScored() {
     return ChineesPoepen
             .builder()
-            .host(host)
+            .host(PlayersObjectFactory.PLAYER_1)
             .round(1)
             .players(PlayersObjectFactory.getPlayers())
             .scores(ScoresObjectFactory.getInvalidScoredScore())
@@ -53,21 +49,22 @@ public class MockFactory {
   }
 
   public static ChineesPoepenEntity newChineesPoepenEntity() {
-    Map<Integer, ChineesPoepenRoundScore> scores = new HashMap<>();
-    ChineesPoepenScore score = new ChineesPoepenScore(scores);
-    Map<String, ChineesPoepenScore> players = new HashMap<>();
+    Map<Integer, ChineesPoepenRoundScore> score = new HashMap<>();
+    ChineesPoepenScore rounds = new ChineesPoepenScore(score);
+    Map<String, ChineesPoepenScore> scores = new HashMap<>();
 
-    players.put(host, score);
-    players.put(host1, score);
-    players.put(host2, score);
-    players.put(host3, score);
+    scores.put(PlayersObjectFactory.PLAYER_1, rounds);
+    scores.put(PlayersObjectFactory.PLAYER_2, rounds);
+    scores.put(PlayersObjectFactory.PLAYER_3, rounds);
+    scores.put(PlayersObjectFactory.PLAYER_4, rounds);
 
     return ChineesPoepenEntity
             .builder()
             .id(gameId)
-            .host(host)
+            .players(PlayersObjectFactory.getPlayers())
+            .host(PlayersObjectFactory.PLAYER_1)
             .round(1)
-            .players(players)
+            .scores(scores)
             .build();
   }
 

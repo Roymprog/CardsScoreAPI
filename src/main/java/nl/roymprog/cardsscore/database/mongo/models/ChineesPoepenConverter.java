@@ -3,9 +3,7 @@ package nl.roymprog.cardsscore.database.mongo.models;
 import com.google.common.collect.Maps;
 import nl.roymprog.cardsscore.models.ChineesPoepen;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
@@ -17,8 +15,8 @@ public class ChineesPoepenConverter {
             .id(entity.id)
             .round(entity.round)
             .host(entity.host)
-            .players(entity.players.keySet())
-            .scores(entity.players
+            .players(entity.players)
+            .scores(entity.scores
                     .entrySet()
                     .stream()
                     .collect(
@@ -31,8 +29,9 @@ public class ChineesPoepenConverter {
     return ChineesPoepenEntity.builder()
             .id(cp.getId())
             .host(cp.getHost())
+            .players(cp.getPlayers())
             .round(cp.getRound())
-            .players(Maps.transformValues(cp.getScores(), ChineesPoepenConverter::convertEntityRounds))
+            .scores(Maps.transformValues(cp.getScores(), ChineesPoepenConverter::convertEntityRounds))
             .build();
   }
 

@@ -17,6 +17,7 @@ import nl.roymprog.cardsscore.models.ChineesPoepen;
 import org.junit.AfterClass;
 import org.junit.Assert;
 import org.junit.BeforeClass;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -64,6 +65,11 @@ public class ChineesPoepenRepositoryTest {
     _mongodExe.stop();
   }
 
+  @BeforeEach
+  public void before() {
+    db.deleteAll();
+  }
+
   @Test
   public void insertTest() {
     ChineesPoepen cp = MockFactory.newChineesPoepen();
@@ -94,5 +100,20 @@ public class ChineesPoepenRepositoryTest {
     assert optionalCp.isPresent();
     ChineesPoepen sut = optionalCp.get();
     Assert.assertEquals(newRound, sut.getRound());
+  }
+
+  @Test
+  public void findByUserId() {
+    // given
+    ChineesPoepen cp = MockFactory.newChineesPoepen();
+
+    // when
+    db.insertNew(cp);
+    db.insertNew(cp);
+    db.insertNew(cp);
+
+    // then
+    List<ChineesPoepen> games = db.getGames(cp.getHost());
+    Assert.assertEquals(3, games.size());
   }
 }

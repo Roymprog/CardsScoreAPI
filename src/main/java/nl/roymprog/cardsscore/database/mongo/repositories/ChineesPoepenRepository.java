@@ -3,9 +3,11 @@ package nl.roymprog.cardsscore.database.mongo.repositories;
 import nl.roymprog.cardsscore.database.mongo.models.ChineesPoepenEntity;
 import org.springframework.data.mongodb.repository.MongoRepository;
 
+import java.util.List;
 import java.util.Optional;
 
 public interface ChineesPoepenRepository extends MongoRepository<ChineesPoepenEntity, String> {
   Optional<ChineesPoepenEntity> findById(String id);
 
+  List<ChineesPoepenEntity> findByPlayers(String player);
 }
