@@ -3,7 +3,7 @@ package nl.roymprog.cardsscore.database.mongo.models;
 import lombok.Builder;
 import org.springframework.data.annotation.Id;
 
-import java.util.List;
+import java.time.LocalDateTime;
 import java.util.Map;
 import java.util.Set;
 
@@ -16,4 +16,5 @@ public class ChineesPoepenEntity {
   public final int round;
   public final Set<String> players;
   public final Map<String, ChineesPoepenScore> scores;
+  public final LocalDateTime startTime;
 }

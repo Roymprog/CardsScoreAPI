@@ -20,6 +20,7 @@ import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping(value = "/games", produces = MediaType.APPLICATION_JSON_VALUE)
+@CrossOrigin
 public class ChineesPoepenController {
 
   private ChineesPoepenDbInterface chineesPoepenDbService;
@@ -32,6 +33,8 @@ public class ChineesPoepenController {
     this.chineesPoepenBusinessDelegateImpl = chineesPoepenBusinessDelegateImpl;
   }
 
+  // @TODO: Validate players exist
+  // @TODO: Return proper player names for display
   @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
   public ResponseEntity<ChineesPoepen> newGame(@Valid @RequestBody ChineesPoepenCreateRequest req) {
     ChineesPoepen cp = chineesPoepenBusinessDelegateImpl.createGame(req);
@@ -67,6 +70,7 @@ public class ChineesPoepenController {
     return new ResponseEntity<>(saved, HttpStatus.OK);
   }
 
+  // @TODO: Return real names
   @GetMapping(value = "/{gameId}")
   public ResponseEntity<ChineesPoepen> getGame(@PathVariable String gameId) {
     Optional<ChineesPoepen> chineesPoepenEntityOptional = chineesPoepenDbService.getGame(gameId);

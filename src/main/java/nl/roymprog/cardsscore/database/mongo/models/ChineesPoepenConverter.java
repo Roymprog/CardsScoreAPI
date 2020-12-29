@@ -3,6 +3,7 @@ package nl.roymprog.cardsscore.database.mongo.models;
 import com.google.common.collect.Maps;
 import nl.roymprog.cardsscore.models.ChineesPoepen;
 
+import java.time.LocalDateTime;
 import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
@@ -16,22 +17,27 @@ public class ChineesPoepenConverter {
             .round(entity.round)
             .host(entity.host)
             .players(entity.players)
+            .startTime(entity.startTime)
             .scores(entity.scores
                     .entrySet()
                     .stream()
                     .collect(
                             Collectors.toMap(Entry::getKey, e -> toScoreList(e.getValue()))
                     )
+
             ).build();
   }
 
   public static ChineesPoepenEntity toEntity(ChineesPoepen cp) {
+    LocalDateTime localDateTime = cp.getStartTime() != null ? cp.getStartTime() : LocalDateTime.now();
+
     return ChineesPoepenEntity.builder()
             .id(cp.getId())
             .host(cp.getHost())
             .players(cp.getPlayers())
             .round(cp.getRound())
             .scores(Maps.transformValues(cp.getScores(), ChineesPoepenConverter::convertEntityRounds))
+            .startTime(localDateTime)
             .build();
   }
 
