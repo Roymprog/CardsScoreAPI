@@ -27,6 +27,11 @@ public class UsersController {
     this.usersDb = usersDb;
   }
 
+  @GetMapping
+  public ResponseEntity<List<User>> getUsers() {
+    return new ResponseEntity<>(usersDb.getAllUsers(), HttpStatus.OK);
+  }
+
   @GetMapping(value = "/{userId}/games")
   public ResponseEntity<List<ChineesPoepen>> getGames(@PathVariable String userId) {
     return new ResponseEntity<>(chineesPoepenDb.getGames(userId), HttpStatus.OK);
