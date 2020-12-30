@@ -2,6 +2,7 @@ package nl.roymprog.cardsscore.database.mongo.models;
 
 import com.google.common.collect.Maps;
 import nl.roymprog.cardsscore.models.ChineesPoepen;
+import nl.roymprog.cardsscore.models.User;
 
 import java.time.LocalDateTime;
 import java.util.*;
@@ -12,11 +13,16 @@ import static java.util.Map.Entry;
 
 public class ChineesPoepenConverter {
   public static ChineesPoepen toDto(ChineesPoepenEntity entity) {
+    Set<User> users =
+            entity.players.stream()
+                    .map((userEntity) -> new User(userEntity.id, userEntity.name))
+                    .collect(Collectors.toSet());
+
     return ChineesPoepen.builder()
             .id(entity.id)
             .round(entity.round)
             .host(entity.host)
-            .players(entity.players)
+            .players(users)
             .startTime(entity.startTime)
             .scores(entity.scores
                     .entrySet()
@@ -30,11 +36,15 @@ public class ChineesPoepenConverter {
 
   public static ChineesPoepenEntity toEntity(ChineesPoepen cp) {
     LocalDateTime localDateTime = cp.getStartTime() != null ? cp.getStartTime() : LocalDateTime.now();
+    Set<UserEntity> userEntities =
+            cp.getPlayers().stream()
+                    .map(UserConverter::toEntity)
+                    .collect(Collectors.toSet());
 
     return ChineesPoepenEntity.builder()
             .id(cp.getId())
             .host(cp.getHost())
-            .players(cp.getPlayers())
+            .players(userEntities)
             .round(cp.getRound())
             .scores(Maps.transformValues(cp.getScores(), ChineesPoepenConverter::convertEntityRounds))
             .startTime(localDateTime)

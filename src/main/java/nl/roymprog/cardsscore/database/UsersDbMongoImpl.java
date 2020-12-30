@@ -27,4 +27,9 @@ public class UsersDbMongoImpl implements UsersDbInterface {
     return repository.findByName(name)
             .map(entity -> new User(entity.id, entity.name));
   }
+
+  public Optional<User> getUserById(String id) {
+    return repository.findById(id)
+            .map(entity -> new User(entity.id, entity.name));
+  }
 }

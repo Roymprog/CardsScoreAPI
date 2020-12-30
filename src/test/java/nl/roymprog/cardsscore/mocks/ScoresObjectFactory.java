@@ -4,6 +4,7 @@ import com.google.common.collect.Maps;
 import nl.roymprog.cardsscore.models.ChineesPoepen;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 public class ScoresObjectFactory {
   public static Map<String, List<ChineesPoepen.Score>> getRoundScores() {
@@ -11,16 +12,16 @@ public class ScoresObjectFactory {
 
     List<ChineesPoepen.Score> scoresList = new ArrayList<>();
     scoresList.add(new ChineesPoepen.Score(0, 0, 5));
-    scores.put(PlayersObjectFactory.PLAYER_1, scoresList);
+    scores.put(PlayersObjectFactory.PLAYER_1.getId(), scoresList);
     scoresList = new ArrayList<>();
     scoresList.add(new ChineesPoepen.Score(0, 0, 5));
-    scores.put(PlayersObjectFactory.PLAYER_2, scoresList);
+    scores.put(PlayersObjectFactory.PLAYER_2.getId(), scoresList);
     scoresList = new ArrayList<>();
     scoresList.add(new ChineesPoepen.Score(0, 0, 5));
-    scores.put(PlayersObjectFactory.PLAYER_3, scoresList);
+    scores.put(PlayersObjectFactory.PLAYER_3.getId(), scoresList);
     scoresList = new ArrayList<>();
     scoresList.add(new ChineesPoepen.Score(0, 1, -1));
-    scores.put(PlayersObjectFactory.PLAYER_4, scoresList);
+    scores.put(PlayersObjectFactory.PLAYER_4.getId(), scoresList);
 
     return scores;
   }
@@ -31,7 +32,10 @@ public class ScoresObjectFactory {
 
   public static Map<String, List<ChineesPoepen.Score>> getInvalidScoredScore() {
     Map<String, List<ChineesPoepen.Score>> scores = new HashMap<>();
-    Set<String> players = PlayersObjectFactory.getPlayers();
+    Set<String> players =
+            PlayersObjectFactory.getPlayers().stream()
+              .map(player -> player.getId())
+              .collect(Collectors.toSet());
     Iterator<String> iterator = players.iterator();
 
     List<ChineesPoepen.Score> scoresList = new ArrayList<>();
@@ -52,7 +56,10 @@ public class ScoresObjectFactory {
 
   public static Map<String, List<ChineesPoepen.Score>> getInvalidCalledScore() {
     Map<String, List<ChineesPoepen.Score>> scores = new HashMap<>();
-    Set<String> players = PlayersObjectFactory.getPlayers();
+    Set<String> players =
+            PlayersObjectFactory.getPlayers().stream()
+                    .map(player -> player.getId())
+                    .collect(Collectors.toSet());
     Iterator<String> iterator = players.iterator();
 
     List<ChineesPoepen.Score> scoresList = new ArrayList<>();
@@ -73,7 +80,6 @@ public class ScoresObjectFactory {
 
   public static Map<String, List<ChineesPoepen.Score>> getFullGame() {
     Map<String, List<ChineesPoepen.Score>> scores = new HashMap<>();
-    Set<String> players = PlayersObjectFactory.getPlayers();
 
     ChineesPoepen.Score round1 = new ChineesPoepen.Score(0, 0);
     ChineesPoepen.Score round2 = new ChineesPoepen.Score(1, 1);
@@ -110,7 +116,7 @@ public class ScoresObjectFactory {
     scoresList.add(round15);
     scoresList.add(round16);
     scoresList.add(round17);
-    scores.put(PlayersObjectFactory.PLAYER_1, scoresList);
+    scores.put(PlayersObjectFactory.PLAYER_1.getId(), scoresList);
     round1 = new ChineesPoepen.Score(0, 1);
     round2 = new ChineesPoepen.Score(1, 0);
     round3 = new ChineesPoepen.Score(1, 0);
@@ -147,7 +153,7 @@ public class ScoresObjectFactory {
     scoresList.add(round15);
     scoresList.add(round16);
     scoresList.add(round17);
-    scores.put(PlayersObjectFactory.PLAYER_2, scoresList);
+    scores.put(PlayersObjectFactory.PLAYER_2.getId(), scoresList);
     round1 = new ChineesPoepen.Score(0, 0);
     round2 = new ChineesPoepen.Score(1, 0);
     round3 = new ChineesPoepen.Score(1, 1);
@@ -183,7 +189,7 @@ public class ScoresObjectFactory {
     scoresList.add(round15);
     scoresList.add(round16);
     scoresList.add(round17);
-    scores.put(PlayersObjectFactory.PLAYER_3, scoresList);
+    scores.put(PlayersObjectFactory.PLAYER_3.getId(), scoresList);
     round1 = new ChineesPoepen.Score(0, 0);
     round2 = new ChineesPoepen.Score(0, 1);
     round3 = new ChineesPoepen.Score(0, 0);
@@ -219,7 +225,7 @@ public class ScoresObjectFactory {
     scoresList.add(round15);
     scoresList.add(round16);
     scoresList.add(round17);
-    scores.put(PlayersObjectFactory.PLAYER_4, scoresList);
+    scores.put(PlayersObjectFactory.PLAYER_4.getId(), scoresList);
 
     return scores;
   }

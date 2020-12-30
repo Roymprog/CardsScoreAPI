@@ -3,7 +3,9 @@ package nl.roymprog.cardsscore.controllers;
 import com.google.common.collect.Maps;
 import nl.roymprog.cardsscore.businessDelegate.ChineesPoepenBusinessDelegate;
 import nl.roymprog.cardsscore.database.ChineesPoepenDbInterface;
+import nl.roymprog.cardsscore.database.UsersDbInterface;
 import nl.roymprog.cardsscore.models.ChineesPoepen;
+import nl.roymprog.cardsscore.models.User;
 import nl.roymprog.cardsscore.models.requests.ChineesPoepenCreateRequest;
 import nl.roymprog.cardsscore.models.requests.ChineesPoepenRequest;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,9 +15,11 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 @RestController
@@ -24,12 +28,15 @@ import java.util.stream.Collectors;
 public class ChineesPoepenController {
 
   private ChineesPoepenDbInterface chineesPoepenDbService;
+  private UsersDbInterface userDbService;
   private ChineesPoepenBusinessDelegate chineesPoepenBusinessDelegateImpl;
 
   @Autowired
   public ChineesPoepenController(ChineesPoepenDbInterface chineesPoepenDbService,
+                                 UsersDbInterface userDbService,
                                  ChineesPoepenBusinessDelegate chineesPoepenBusinessDelegateImpl) {
     this.chineesPoepenDbService = chineesPoepenDbService;
+    this.userDbService = userDbService;
     this.chineesPoepenBusinessDelegateImpl = chineesPoepenBusinessDelegateImpl;
   }
 
@@ -37,7 +44,21 @@ public class ChineesPoepenController {
   // @TODO: Return proper player names for display
   @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
   public ResponseEntity<ChineesPoepen> newGame(@Valid @RequestBody ChineesPoepenCreateRequest req) {
-    ChineesPoepen cp = chineesPoepenBusinessDelegateImpl.createGame(req);
+    Set<User> users =
+            req.getPlayers().stream()
+              .map((player) -> userDbService.getUserById(player))
+              .filter(opt -> opt.isPresent())
+              .map(opt -> opt.get())
+              .collect(Collectors.toSet());
+
+    ChineesPoepen request = ChineesPoepen.builder()
+            .host(req.getHost())
+            .players(users)
+            .startTime(LocalDateTime.now())
+            .state("CREATED")
+            .build();
+
+    ChineesPoepen cp = chineesPoepenBusinessDelegateImpl.createGame(request);
     ChineesPoepen response = chineesPoepenDbService.insertNew(cp);
 
     return new ResponseEntity<>(response, HttpStatus.CREATED);

@@ -7,7 +7,7 @@ import nl.roymprog.cardsscore.models.requests.ChineesPoepenRequest;
 import java.util.List;
 
 public interface ChineesPoepenBusinessDelegate {
-  ChineesPoepen createGame(ChineesPoepenCreateRequest dto);
+  ChineesPoepen createGame(ChineesPoepen cp);
 
   void validateRound(List<ChineesPoepen.Score> score, int round);
 

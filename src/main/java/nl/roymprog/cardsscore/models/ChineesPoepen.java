@@ -21,7 +21,7 @@ public class ChineesPoepen {
 
   private String id;
   private String host;
-  private Set<String> players;
+  private Set<User> players;
   private int round;
   // @Todo: Create Object for scores
   private Map<String, List<Score>> scores;

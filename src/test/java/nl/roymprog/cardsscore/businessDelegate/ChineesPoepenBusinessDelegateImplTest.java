@@ -73,13 +73,13 @@ public class ChineesPoepenBusinessDelegateImplTest {
     Map<String, List<ChineesPoepen.Score>> players = Maps.transformValues(cp.getScores(), scores -> sut.calculateScores(scores));
     ChineesPoepen result = ChineesPoepen.builder().scores(players).build();
 
-    Optional<Integer> score = result.getScore(PlayersObjectFactory.PLAYER_1);
+    Optional<Integer> score = result.getScore(PlayersObjectFactory.PLAYER_1.getId());
     assertEquals(63, score.get().intValue());
-    score = result.getScore(PlayersObjectFactory.PLAYER_2);
+    score = result.getScore(PlayersObjectFactory.PLAYER_2.getId());
     assertEquals(31, score.get().intValue());
-    score = result.getScore(PlayersObjectFactory.PLAYER_3);
+    score = result.getScore(PlayersObjectFactory.PLAYER_3.getId());
     assertEquals(43, score.get().intValue());
-    score = result.getScore(PlayersObjectFactory.PLAYER_4);
+    score = result.getScore(PlayersObjectFactory.PLAYER_4.getId());
     assertEquals(51, score.get().intValue());
   }
 

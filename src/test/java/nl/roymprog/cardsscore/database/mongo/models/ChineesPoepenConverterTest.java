@@ -5,6 +5,8 @@ import nl.roymprog.cardsscore.models.ChineesPoepen;
 import org.junit.Assert;
 import org.junit.Test;
 
+import java.util.stream.Collectors;
+
 public class ChineesPoepenConverterTest {
 
   @Test
@@ -15,7 +17,7 @@ public class ChineesPoepenConverterTest {
     Assert.assertEquals(entity.id, cp.getId());
     Assert.assertEquals(entity.host, cp.getHost());
     Assert.assertEquals(entity.round, cp.getRound());
-    Assert.assertEquals(entity.scores.keySet(), cp.getPlayers());
+    Assert.assertEquals(entity.scores.keySet(), cp.getPlayers().stream().map(player -> player.getId()).collect(Collectors.toSet()));
   }
 
   @Test
@@ -26,7 +28,6 @@ public class ChineesPoepenConverterTest {
     Assert.assertEquals(null, entity.id);
     Assert.assertEquals(cp.getHost(), entity.host);
     Assert.assertEquals(cp.getRound(), entity.round);
-    Assert.assertEquals(cp.getPlayers(), entity.scores.keySet());
-
+    Assert.assertEquals(cp.getPlayers().stream().map(player -> player.getId()).collect(Collectors.toSet()), entity.scores.keySet());
   }
 }

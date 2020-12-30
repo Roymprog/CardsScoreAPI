@@ -10,6 +10,7 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
@@ -18,20 +19,12 @@ import static nl.roymprog.cardsscore.models.ChineesPoepen.NUMBER_OF_ROUNDS;
 @Component
 @Log
 public class ChineesPoepenBusinessDelegateImpl implements ChineesPoepenBusinessDelegate {
-  public ChineesPoepen createGame(ChineesPoepenCreateRequest dto) {
-    Map<String, List<ChineesPoepen.Score>> scores = Maps.toMap(dto.getPlayers(),
-              player -> new ArrayList<>()
-            );
-
-    ChineesPoepen cp = ChineesPoepen.builder()
-            .host(dto.getHost())
-            .players(dto.getPlayers())
-            .round(1)
-            .startTime(LocalDateTime.now())
-            .state("CREATED")
-            .scores(scores)
-            .build();
-
+  public ChineesPoepen createGame(ChineesPoepen cp) {
+    if (cp.getHost() == null) {
+      String message = "Host must be provided";
+      log.severe(message);
+      throw new IllegalArgumentException(message);
+    }
     // TODO: allow for determining dealer in backend
     if (cp.getPlayers().size() < ChineesPoepen.NUMBER_OF_PLAYERS) {
       String message = "Cannot create game, number of players is not " + ChineesPoepen.NUMBER_OF_PLAYERS;
@@ -39,7 +32,20 @@ public class ChineesPoepenBusinessDelegateImpl implements ChineesPoepenBusinessD
       throw new IllegalArgumentException(message);
     }
 
-    return cp;
+    Set<String> playerNames = cp.getPlayers().stream().map(player -> player.getId()).collect(Collectors.toSet());
+
+    Map<String, List<ChineesPoepen.Score>> scores = Maps.toMap(playerNames,
+              player -> new ArrayList<>()
+            );
+
+    return ChineesPoepen.builder()
+            .host(cp.getHost())
+            .players(cp.getPlayers())
+            .round(1)
+            .startTime(LocalDateTime.now())
+            .state("CREATED")
+            .scores(scores)
+            .build();
   }
 
   public void validateRound(List<ChineesPoepen.Score> scoreList, int round) {

@@ -6,8 +6,6 @@ import nl.roymprog.cardsscore.database.mongo.repositories.ChineesPoepenRepositor
 import nl.roymprog.cardsscore.models.ChineesPoepen;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.mongodb.core.MongoTemplate;
-import org.springframework.data.mongodb.core.query.Criteria;
-import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
@@ -48,7 +46,7 @@ public class ChineesPoepenMongoDb implements ChineesPoepenDbInterface {
   }
 
   public List<ChineesPoepen> getGames(String userId) {
-    return repository.findByPlayers(userId).stream()
+    return repository.findByPlayersId(userId).stream()
             .map(ChineesPoepenConverter::toDto)
             .collect(Collectors.toList());
   }

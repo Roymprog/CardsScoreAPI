@@ -14,7 +14,7 @@ public class ChineesPoepenEntity {
 
   public final String host;
   public final int round;
-  public final Set<String> players;
+  public final Set<UserEntity> players;
   public final Map<String, ChineesPoepenScore> scores;
   public final LocalDateTime startTime;
 }

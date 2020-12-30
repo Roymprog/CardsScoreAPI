@@ -8,4 +8,6 @@ public interface UsersDbInterface {
   User insertNew(User user);
 
   Optional<User> getUser(String name);
+
+  Optional<User> getUserById(String id);
 }

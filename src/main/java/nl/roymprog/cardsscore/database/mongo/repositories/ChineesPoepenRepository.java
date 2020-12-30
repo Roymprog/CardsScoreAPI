@@ -9,5 +9,6 @@ import java.util.Optional;
 public interface ChineesPoepenRepository extends MongoRepository<ChineesPoepenEntity, String> {
   Optional<ChineesPoepenEntity> findById(String id);
 
-  List<ChineesPoepenEntity> findByPlayers(String player);
+  // Fetches all entities containing the playerId in the list of players
+  List<ChineesPoepenEntity> findByPlayersId(String playerId);
 }

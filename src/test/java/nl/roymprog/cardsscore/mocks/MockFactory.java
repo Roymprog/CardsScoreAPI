@@ -1,8 +1,6 @@
 package nl.roymprog.cardsscore.mocks;
 
-import nl.roymprog.cardsscore.database.mongo.models.ChineesPoepenEntity;
-import nl.roymprog.cardsscore.database.mongo.models.ChineesPoepenRoundScore;
-import nl.roymprog.cardsscore.database.mongo.models.ChineesPoepenScore;
+import nl.roymprog.cardsscore.database.mongo.models.*;
 import nl.roymprog.cardsscore.models.ChineesPoepen;
 
 import java.util.*;
@@ -17,11 +15,11 @@ public class MockFactory {
     score.add(roundScore);
 
     Map<String, List<ChineesPoepen.Score>> scores = PlayersObjectFactory.getPlayers().stream()
-            .collect(Collectors.toMap(x -> x, x -> score));
+            .collect(Collectors.toMap(x -> x.getId(), x -> score));
 
     return ChineesPoepen
             .builder()
-              .host(PlayersObjectFactory.PLAYER_1)
+              .host(PlayersObjectFactory.PLAYER_1.getId())
               .round(1)
               .players(PlayersObjectFactory.getPlayers())
               .scores(scores)
@@ -31,7 +29,7 @@ public class MockFactory {
   public static ChineesPoepen newChineesPoepenInvalidScoresCalled() {
     return ChineesPoepen
             .builder()
-            .host(PlayersObjectFactory.PLAYER_1)
+            .host(PlayersObjectFactory.PLAYER_1.getId())
             .round(1)
             .players(PlayersObjectFactory.getPlayers())
             .scores(ScoresObjectFactory.getInvalidCalledScore())
@@ -41,7 +39,7 @@ public class MockFactory {
   public static ChineesPoepen newChineesPoepenInvalidScoresScored() {
     return ChineesPoepen
             .builder()
-            .host(PlayersObjectFactory.PLAYER_1)
+            .host(PlayersObjectFactory.PLAYER_1.getId())
             .round(1)
             .players(PlayersObjectFactory.getPlayers())
             .scores(ScoresObjectFactory.getInvalidScoredScore())
@@ -53,16 +51,21 @@ public class MockFactory {
     ChineesPoepenScore rounds = new ChineesPoepenScore(score);
     Map<String, ChineesPoepenScore> scores = new HashMap<>();
 
-    scores.put(PlayersObjectFactory.PLAYER_1, rounds);
-    scores.put(PlayersObjectFactory.PLAYER_2, rounds);
-    scores.put(PlayersObjectFactory.PLAYER_3, rounds);
-    scores.put(PlayersObjectFactory.PLAYER_4, rounds);
+    scores.put(PlayersObjectFactory.PLAYER_1.getId(), rounds);
+    scores.put(PlayersObjectFactory.PLAYER_2.getId(), rounds);
+    scores.put(PlayersObjectFactory.PLAYER_3.getId(), rounds);
+    scores.put(PlayersObjectFactory.PLAYER_4.getId(), rounds);
+
+    Set<UserEntity> users =
+            PlayersObjectFactory.getPlayers().stream()
+                    .map(UserConverter::toEntity)
+                    .collect(Collectors.toSet());
 
     return ChineesPoepenEntity
             .builder()
             .id(gameId)
-            .players(PlayersObjectFactory.getPlayers())
-            .host(PlayersObjectFactory.PLAYER_1)
+            .players(users)
+            .host(PlayersObjectFactory.PLAYER_1.getName())
             .round(1)
             .scores(scores)
             .build();

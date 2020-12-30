@@ -3,8 +3,11 @@ package nl.roymprog.cardsscore.controllers;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import nl.roymprog.cardsscore.businessDelegate.ChineesPoepenBusinessDelegate;
 import nl.roymprog.cardsscore.database.ChineesPoepenDbInterface;
+import nl.roymprog.cardsscore.database.UsersDbInterface;
 import nl.roymprog.cardsscore.mocks.ChineesPoepenObjectFactory;
+import nl.roymprog.cardsscore.mocks.PlayersObjectFactory;
 import nl.roymprog.cardsscore.models.ChineesPoepen;
+import nl.roymprog.cardsscore.models.User;
 import nl.roymprog.cardsscore.models.requests.ChineesPoepenCreateRequest;
 import nl.roymprog.cardsscore.models.requests.ChineesPoepenRequest;
 import org.junit.Before;
@@ -39,6 +42,9 @@ public class ChineesPoepenControllerTest {
 
   @MockBean
   private ChineesPoepenDbInterface chineesPoepenDbService;
+
+  @MockBean
+  private UsersDbInterface userDbService;
 
   @MockBean
   private ChineesPoepenBusinessDelegate chineesPoepenBusinessDelegateImpl;
@@ -85,7 +91,7 @@ public class ChineesPoepenControllerTest {
 
   @Test
   public void createGameInvalid() throws Exception {
-    when(chineesPoepenBusinessDelegateImpl.createGame(any(ChineesPoepenCreateRequest.class))).thenThrow(IllegalArgumentException.class);
+    when(chineesPoepenBusinessDelegateImpl.createGame(any(ChineesPoepen.class))).thenThrow(IllegalArgumentException.class);
 
     this.mockMvc.perform(post("/games", USER_ID)
             .contentType(MediaType.APPLICATION_JSON)
@@ -105,11 +111,8 @@ public class ChineesPoepenControllerTest {
 
   @Test
   public void playGameInvalidRound() throws Exception {
-    Set<String> correctPlayers = new HashSet<>();
-    correctPlayers.add("18adb080-acae-42e8-9984-c9bf97259306");
-    correctPlayers.add("18adb080-acae-42e8-9984-c9bf97259307");
-    correctPlayers.add("18adb080-acae-42e8-9984-c9bf97259308");
-    correctPlayers.add("18adb080-acae-42e8-9984-c9bf97259309");
+    Set<User> correctPlayers = PlayersObjectFactory.getPlayers();
+
     ChineesPoepen cp = ChineesPoepen.builder()
             .id(GAME_ID)
             .host(USER_ID)
