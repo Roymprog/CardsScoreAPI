@@ -2,7 +2,7 @@ package nl.roymprog.cardsscore.database.mongo;
 
 import com.mongodb.MongoClient;
 import com.mongodb.MongoClientOptions;
-import com.mongodb.MongoClientURI;
+import org.springframework.beans.factory.BeanCreationException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Profile;
@@ -11,8 +11,8 @@ import org.springframework.data.mongodb.repository.config.EnableMongoRepositorie
 
 @Configuration
 @EnableMongoRepositories
-@Profile("prod")
-class MongoDbClientConfiguration extends AbstractMongoConfiguration {
+@Profile("local")
+class LocalMongoDbClientConfiguration extends AbstractMongoConfiguration {
 
   @Autowired
   private MongoDbConfig mongoDbConfig;
@@ -24,14 +24,8 @@ class MongoDbClientConfiguration extends AbstractMongoConfiguration {
 
   @Override
   public MongoClient mongoClient() {
-    String uri = String.format("mongodb+srv://%s:%s@cluster0.pmtkg.mongodb.net/%s",
-            mongoDbConfig.getUsername(),
-            mongoDbConfig.getPassword(),
-            mongoDbConfig.getHost(),
-            mongoDbConfig.getDatabase());
-    System.out.println(uri);
-    MongoClientURI mongoClientURI = new MongoClientURI(uri, mongoDbConfig.getMongoClientOptionsBuilder());
-
-    return new MongoClient(mongoClientURI);
+    return new MongoClient(mongoDbConfig.getServerAddress(),
+                           mongoDbConfig.getCredentials(),
+                           MongoClientOptions.builder().build());
   }
 }
