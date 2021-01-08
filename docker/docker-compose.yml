@@ -6,8 +6,6 @@ services:
   mongo:
     image: mongo
     restart: always
-    ports:
-      - 27017:27017
     environment:
       MONGO_INITDB_ROOT_USERNAME: root
       MONGO_INITDB_ROOT_PASSWORD: example
@@ -22,3 +20,11 @@ services:
     environment:
       ME_CONFIG_MONGODB_ADMINUSERNAME: root
       ME_CONFIG_MONGODB_ADMINPASSWORD: example
+
+  cardsscore-api:
+    image: royvs.docker.org/cardsscore-api:0.0.1
+    restart: always
+    ports:
+      - 8080:8080
+    volumes:
+      - ./resources:/home/app/resources:ro

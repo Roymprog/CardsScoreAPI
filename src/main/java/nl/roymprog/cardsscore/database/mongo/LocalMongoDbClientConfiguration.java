@@ -2,6 +2,7 @@ package nl.roymprog.cardsscore.database.mongo;
 
 import com.mongodb.MongoClient;
 import com.mongodb.MongoClientOptions;
+import lombok.extern.java.Log;
 import org.springframework.beans.factory.BeanCreationException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;

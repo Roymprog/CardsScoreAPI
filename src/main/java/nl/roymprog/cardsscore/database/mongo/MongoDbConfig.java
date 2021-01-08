@@ -7,6 +7,7 @@ import com.mongodb.ServerAddress;
 import com.typesafe.config.Config;
 import com.typesafe.config.ConfigFactory;
 import lombok.Getter;
+import lombok.extern.java.Log;
 import org.springframework.context.annotation.Configuration;
 
 import java.util.ArrayList;
@@ -29,7 +30,7 @@ public class MongoDbConfig {
   private final MongoClientOptions.Builder mongoClientOptionsBuilder;
 
   public MongoDbConfig() {
-    Config mongoConfig = ConfigFactory.load("application.conf")
+    Config mongoConfig = ConfigFactory.load()
             .getConfig("nl.roymprog.cardsscore")
             .getConfig("mongodb");
     host = mongoConfig.getString("host");
