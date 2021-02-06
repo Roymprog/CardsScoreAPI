@@ -3,12 +3,20 @@ version: '3.1'
 
 services:
 
+  cardsscore-fe:
+    image: royvs.docker.org/cardsscore-fe:0.0.2
+    restart: always
+    ports:
+      - 8081:8081
+
   mongo:
     image: mongo
     restart: always
     environment:
       MONGO_INITDB_ROOT_USERNAME: root
       MONGO_INITDB_ROOT_PASSWORD: example
+    ports:
+      - 27017:27017
     volumes:
       - ./mongo-init.js:/docker-entrypoint-initdb.d/mongo-init.js:ro
 
@@ -16,13 +24,13 @@ services:
     image: mongo-express
     restart: always
     ports:
-      - 8081:8081
+      - 8082:8081
     environment:
       ME_CONFIG_MONGODB_ADMINUSERNAME: root
       ME_CONFIG_MONGODB_ADMINPASSWORD: example
 
   cardsscore-api:
-    image: royvs.docker.org/cardsscore-api:0.0.2
+    image: royvs.docker.org/cardsscore-api:0.0.3
     restart: always
     ports:
       - 8080:8080

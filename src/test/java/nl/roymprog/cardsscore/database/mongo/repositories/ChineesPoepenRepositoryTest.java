@@ -12,24 +12,27 @@ import de.flapdoodle.embed.process.runtime.Network;
 import nl.roymprog.cardsscore.database.ChineesPoepenMongoDb;
 import nl.roymprog.cardsscore.database.mongo.MongoDbConfig;
 import nl.roymprog.cardsscore.mocks.MockFactory;
-import nl.roymprog.cardsscore.mocks.ScoresObjectFactory;
 import nl.roymprog.cardsscore.models.ChineesPoepen;
-import org.junit.AfterClass;
-import org.junit.Assert;
-import org.junit.BeforeClass;
+
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.context.ContextConfiguration;
 
 import java.io.IOException;
-import java.util.*;
+import java.util.List;
+import java.util.Optional;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 import static nl.roymprog.cardsscore.mocks.ScoresObjectFactory.getRoundScore;
+import static nl.roymprog.cardsscore.mocks.ScoresObjectFactory.getRoundScoreCalled;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @SpringBootTest
-@ContextConfiguration
 public class ChineesPoepenRepositoryTest {
   @Autowired
   private ChineesPoepenMongoDb db;
@@ -39,13 +42,14 @@ public class ChineesPoepenRepositoryTest {
 
   private static final MongodStarter starter = MongodStarter.getDefaultInstance();
 
-  private MongodExecutable _mongodExe;
-  private MongodProcess _mongod;
+  private static MongodExecutable _mongodExe;
+  private static MongodProcess _mongod;
 
-  private MongoClient _mongo;
+  private static MongoClient _mongo;
 
-  @BeforeClass
-  public void setUp() throws IOException {
+  @BeforeAll
+  public static void setUp() throws IOException {
+    MongoDbConfig mongoDbConfig = new MongoDbConfig();
 
     IMongodConfig mongodConfig = new MongodConfigBuilder()
             .version(Version.Main.PRODUCTION)
@@ -56,11 +60,10 @@ public class ChineesPoepenRepositoryTest {
     _mongod = _mongodExe.start();
 
     _mongo = new MongoClient(mongodConfig.net().getBindIp(), mongodConfig.net().getPort());
-
   }
 
-  @AfterClass
-  protected void tearDown() {
+  @AfterAll
+  protected static void tearDown() {
     _mongod.stop();
     _mongodExe.stop();
   }
@@ -81,7 +84,9 @@ public class ChineesPoepenRepositoryTest {
     Optional<ChineesPoepen> optionalCp = db.getGame(saved.getId());
     assert optionalCp.isPresent();
     ChineesPoepen fetched = optionalCp.get();
-    Assert.assertEquals(cp.getPlayers(), fetched.getPlayers());
+    Set<String> expectedIds = cp.getPlayers().stream().map(player->player.getId()).collect(Collectors.toSet());
+    Set<String> actualIds = fetched.getPlayers().stream().map(player->player.getId()).collect(Collectors.toSet());
+    assertEquals(expectedIds, actualIds);
   }
 
   @Test
@@ -99,7 +104,26 @@ public class ChineesPoepenRepositoryTest {
     Optional<ChineesPoepen> optionalCp = db.getGame(updated.getId());
     assert optionalCp.isPresent();
     ChineesPoepen sut = optionalCp.get();
-    Assert.assertEquals(newRound, sut.getRound());
+    assertEquals(newRound + 1, sut.getRound());
+  }
+
+  @Test
+  public void updateTestCalledScore() {
+    // given
+    ChineesPoepen cp = MockFactory.newChineesPoepen();
+
+    ChineesPoepen saved = db.insertNew(cp);
+    int newRound = 2;
+    saved.addScores(getRoundScoreCalled(), newRound);
+    // when
+    ChineesPoepen updated = db.updateGame(saved);
+
+    // then
+    Optional<ChineesPoepen> optionalCp = db.getGame(updated.getId());
+    assert optionalCp.isPresent();
+    ChineesPoepen sut = optionalCp.get();
+    assertEquals(newRound + 1, sut.getRound());
+    assertTrue(sut.getScores(newRound).stream().allMatch(score -> score.getPointsScored().isEmpty()));
   }
 
   @Test
@@ -114,6 +138,6 @@ public class ChineesPoepenRepositoryTest {
 
     // then
     List<ChineesPoepen> games = db.getGames(cp.getHost());
-    Assert.assertEquals(3, games.size());
+    assertEquals(3, games.size());
   }
 }

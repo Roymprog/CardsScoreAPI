@@ -16,10 +16,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import java.time.LocalDateTime;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @RestController
@@ -76,11 +73,11 @@ public class ChineesPoepenController {
     ChineesPoepen cp = chineesPoepenOptional.get();
 
     Map<String, ChineesPoepen.Score> scoreMap = Maps.transformValues(req.getScores(),
-            score -> new ChineesPoepen.Score(score.getPointsCalled(), score.getPointsScored(), cp.getRound())
-    );
+            score -> score.getPointsScored()
+                    .map(pointsScored -> new ChineesPoepen.Score(score.getPointsCalled(), pointsScored))
+                    .orElse(new ChineesPoepen.Score(score.getPointsCalled())));
 
-    List<ChineesPoepen.Score> scores = scoreMap.values().stream()
-            .collect(Collectors.toList());
+    List<ChineesPoepen.Score> scores = new ArrayList<>(scoreMap.values());
     chineesPoepenBusinessDelegateImpl.validateRound(scores, req.getRound());
 
     Map<String, ChineesPoepen.Score> scm = Maps.transformValues(scoreMap, sc -> chineesPoepenBusinessDelegateImpl.calculateScore(sc, req.getRound()));

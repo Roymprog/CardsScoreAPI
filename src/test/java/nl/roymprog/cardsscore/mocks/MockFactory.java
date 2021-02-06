@@ -10,7 +10,7 @@ public class MockFactory {
   private static final String gameId = "id";
 
   public static ChineesPoepen newChineesPoepen() {
-    ChineesPoepen.Score roundScore = new ChineesPoepen.Score(6, 1, 1);
+    ChineesPoepen.Score roundScore = new ChineesPoepen.Score( 1, 1, 6);
     List<ChineesPoepen.Score> score = new ArrayList<>();
     score.add(roundScore);
 
@@ -20,7 +20,7 @@ public class MockFactory {
     return ChineesPoepen
             .builder()
               .host(PlayersObjectFactory.PLAYER_1.getId())
-              .round(1)
+              .round(2)
               .players(PlayersObjectFactory.getPlayers())
               .scores(scores)
               .build();

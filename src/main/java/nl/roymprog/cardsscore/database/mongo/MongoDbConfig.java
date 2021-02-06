@@ -1,18 +1,12 @@
 package nl.roymprog.cardsscore.database.mongo;
 
 import com.mongodb.MongoClientOptions;
-import com.mongodb.MongoClientURI;
 import com.mongodb.MongoCredential;
 import com.mongodb.ServerAddress;
 import com.typesafe.config.Config;
 import com.typesafe.config.ConfigFactory;
 import lombok.Getter;
-import lombok.extern.java.Log;
 import org.springframework.context.annotation.Configuration;
-
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
 
 import static com.mongodb.WriteConcern.MAJORITY;
 

@@ -78,8 +78,12 @@ public class ChineesPoepenBusinessDelegateImpl implements ChineesPoepenBusinessD
   }
 
   public boolean roundScoresScoredValid(List<ChineesPoepen.Score> scores, int round) {
+    if (scores.stream().anyMatch(score -> score.getPointsScored().isEmpty())) {
+      return true;
+    }
+
     int sum = scores.stream()
-            .mapToInt(score -> score.getPointsScored())
+            .mapToInt(score -> score.getPointsScored().orElse(0))
             .sum();
 
     return sum == getHandSizeForRound(round);
@@ -96,12 +100,16 @@ public class ChineesPoepenBusinessDelegateImpl implements ChineesPoepenBusinessD
   }
 
   public ChineesPoepen.Score calculateScore(ChineesPoepen.Score score, int round) {
-    int diff = Math.abs(score.getPointsCalled() - score.getPointsScored());
-    int bonus = (round >= 6 && round <= 12 && score.getPointsCalled() == 0) ? 10 : 5;
+    return score.getPointsScored().map(pointsScored -> {
+      int pointsCalled = score.getPointsCalled();
+      int diff = Math.abs(pointsCalled - pointsScored);
+      int bonus = (round >= 6 && round <= 12 && score.getPointsCalled() == 0) ? 10 : 5;
 
-    int points =  score.getPointsCalled() == score.getPointsScored() ? bonus + score.getPointsCalled() : -diff;
+      int points =  pointsCalled == pointsScored ? bonus + score.getPointsCalled() : -diff;
 
-    return new ChineesPoepen.Score(score.getPointsCalled(), score.getPointsScored(), points);
+      return new ChineesPoepen.Score(score.getPointsCalled(), pointsScored, points);
+
+    }).orElse(score);
   }
 
   public List<ChineesPoepen.Score> calculateScores(List<ChineesPoepen.Score> scores) {

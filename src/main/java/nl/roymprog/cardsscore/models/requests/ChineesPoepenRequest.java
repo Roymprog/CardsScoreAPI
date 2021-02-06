@@ -1,6 +1,7 @@
 package nl.roymprog.cardsscore.models.requests;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -16,7 +17,12 @@ public class ChineesPoepenRequest {
   @Data
   public static class Score {
     private int pointsCalled;
-    private int pointsScored;
+    private Integer pointsScored;
+
+    @JsonInclude(JsonInclude.Include.NON_EMPTY)
+    public Optional<Integer> getPointsScored() {
+      return Optional.ofNullable(pointsScored);
+    }
   }
 
   @JsonIgnore

@@ -21,6 +21,17 @@ public class ChineesPoepenObjectFactory {
             .build();
   }
 
+  public static ChineesPoepen getChineesPoepenPointsCalledOnly() {
+    return ChineesPoepen.builder()
+            .host(HOST_ID)
+            .startTime(LocalDateTime.now())
+            .players(PlayersObjectFactory.getPlayers())
+            .round(1)
+            .id(CHINEESPOEPEN_ID)
+            .scores(ScoresObjectFactory.getRoundScoresCalledOnly())
+            .build();
+  }
+
   public static ChineesPoepen getChineesPoepenFullGame() {
     return ChineesPoepen.builder()
             .host(HOST_ID)

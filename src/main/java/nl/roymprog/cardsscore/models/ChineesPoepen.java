@@ -36,7 +36,7 @@ public class ChineesPoepen {
     } else {
       return Optional.of(
               playerScores.stream()
-                      .mapToInt(playerScore -> playerScore.getScore())
+                      .mapToInt(playerScore -> playerScore.getScore().orElse(0))
                       .sum());
     }
   }
@@ -66,20 +66,26 @@ public class ChineesPoepen {
 
   @Getter
   public static class Score {
+    public Score(int pointsCalled) {
+      this.pointsCalled = pointsCalled;
+      this.pointsScored = Optional.empty();
+      this.score = Optional.empty();
+    }
+
     public Score(int pointsCalled, int pointsScored) {
       this.pointsCalled = pointsCalled;
-      this.pointsScored = pointsScored;
-      this.score = 0;
+      this.pointsScored = Optional.of(pointsScored);
+      this.score = Optional.empty();
     }
 
     public Score(int pointsCalled, int pointsScored, int score) {
       this.pointsCalled = pointsCalled;
-      this.pointsScored = pointsScored;
-      this.score = score;
+      this.pointsScored = Optional.of(pointsScored);
+      this.score = Optional.of(score);
     }
 
     private final int pointsCalled;
-    private final int pointsScored;
-    private final int score;
+    private final Optional<Integer> pointsScored;
+    private final Optional<Integer> score;
   }
 }

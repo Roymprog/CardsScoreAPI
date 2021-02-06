@@ -5,22 +5,22 @@ import nl.roymprog.cardsscore.mocks.ChineesPoepenObjectFactory;
 import nl.roymprog.cardsscore.mocks.MockFactory;
 import nl.roymprog.cardsscore.mocks.PlayersObjectFactory;
 import nl.roymprog.cardsscore.models.ChineesPoepen;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.mockito.junit.MockitoJUnitRunner;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.fail;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
-@RunWith(MockitoJUnitRunner.class)
+
+@ExtendWith(MockitoExtension.class)
 public class ChineesPoepenBusinessDelegateImplTest {
 
   ChineesPoepenBusinessDelegateImpl sut = new ChineesPoepenBusinessDelegateImpl();
-
 
   @Test
   public void playRound() {
@@ -29,37 +29,36 @@ public class ChineesPoepenBusinessDelegateImplTest {
     playRound(cp);
   }
 
-  @Test(expected = IllegalArgumentException.class)
-  public void playRoundIncompleteScores() {
-    ChineesPoepen cp = MockFactory.newChineesPoepen();
+  @Test
+  public void playRoundPointsCalledOnly() {
+    ChineesPoepen cp = ChineesPoepenObjectFactory.getChineesPoepenPointsCalledOnly();
 
     playRound(cp);
   }
 
   @Test
+  public void playRoundIncompleteScores() {
+    ChineesPoepen cp = MockFactory.newChineesPoepen();
+
+    Assertions.assertThrows(IllegalArgumentException.class, () ->{
+      playRound(cp);
+    });
+  }
+
+  @Test
   public void playRoundInvalidScoresCalled() {
     ChineesPoepen cp = MockFactory.newChineesPoepenInvalidScoresCalled();
-    try {
-      playRound(cp);
-    } catch (IllegalArgumentException e) {
-      assertEquals(String.format("Sum of called cannot equal hand size for round %d", cp.getRound()), e.getMessage());
-      return;
-    }
 
-    fail("Expected IllegalArgumentException not thrown");
+    Assertions.assertThrows(IllegalArgumentException.class, () -> playRound(cp),
+            String.format("Sum of called cannot equal hand size for round %d", cp.getRound()));
   }
 
   @Test
   public void playRoundInvalidScoresScored() {
     ChineesPoepen cp = MockFactory.newChineesPoepenInvalidScoresScored();
-    try {
-      playRound(cp);
-    } catch (IllegalArgumentException e) {
-      assertEquals(String.format("Sum of scored points has to equal hand size for round %d", cp.getRound()), e.getMessage());
-      return;
-    }
 
-    fail("Expected IllegalArgumentException not thrown");
+    Assertions.assertThrows(IllegalArgumentException.class, () -> playRound(cp),
+            String.format("Sum of scored points has to equal hand size for round %d", cp.getRound()));
   }
 
   @Test

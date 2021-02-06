@@ -10,19 +10,22 @@ import nl.roymprog.cardsscore.models.ChineesPoepen;
 import nl.roymprog.cardsscore.models.User;
 import nl.roymprog.cardsscore.models.requests.ChineesPoepenCreateRequest;
 import nl.roymprog.cardsscore.models.requests.ChineesPoepenRequest;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
-import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.*;
+import java.util.HashSet;
+import java.util.Optional;
+import java.util.Set;
+import java.util.UUID;
 
 import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.*;
@@ -30,7 +33,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-@RunWith(SpringRunner.class)
+@ExtendWith(SpringExtension.class)
 @WebMvcTest(controllers = ChineesPoepenController.class)
 public class ChineesPoepenControllerTest {
 
@@ -58,7 +61,7 @@ public class ChineesPoepenControllerTest {
   private ChineesPoepenCreateRequest createRequest = new ChineesPoepenCreateRequest();
   private ChineesPoepenRequest updateRequest;
 
-  @Before
+  @BeforeEach
   public void setUp() throws IOException {
     players = new HashSet<>();
     players.add(PLAYER1);

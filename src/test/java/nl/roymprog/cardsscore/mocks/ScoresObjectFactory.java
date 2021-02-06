@@ -26,6 +26,29 @@ public class ScoresObjectFactory {
     return scores;
   }
 
+  public static Map<String, List<ChineesPoepen.Score>> getRoundScoresCalledOnly() {
+    Map<String, List<ChineesPoepen.Score>> scores = new HashMap<>();
+
+    List<ChineesPoepen.Score> scoresList = new ArrayList<>();
+    scoresList.add(new ChineesPoepen.Score(0));
+    scores.put(PlayersObjectFactory.PLAYER_1.getId(), scoresList);
+    scoresList = new ArrayList<>();
+    scoresList.add(new ChineesPoepen.Score(0));
+    scores.put(PlayersObjectFactory.PLAYER_2.getId(), scoresList);
+    scoresList = new ArrayList<>();
+    scoresList.add(new ChineesPoepen.Score(0));
+    scores.put(PlayersObjectFactory.PLAYER_3.getId(), scoresList);
+    scoresList = new ArrayList<>();
+    scoresList.add(new ChineesPoepen.Score(0));
+    scores.put(PlayersObjectFactory.PLAYER_4.getId(), scoresList);
+
+    return scores;
+
+  }
+  public static Map<String, ChineesPoepen.Score> getRoundScoreCalled() {
+    return Maps.transformValues(getRoundScores(), scores -> new ChineesPoepen.Score(scores.get(0).getPointsCalled()));
+  }
+
   public static Map<String, ChineesPoepen.Score> getRoundScore() {
     return Maps.transformValues(getRoundScores(), scores -> scores.get(0));
   }

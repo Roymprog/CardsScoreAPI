@@ -10,6 +10,7 @@ import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
 import static java.util.Map.Entry;
+import static nl.roymprog.cardsscore.database.mongo.models.ChineesPoepenRoundScore.State.FINISHED;
 
 public class ChineesPoepenConverter {
   public static ChineesPoepen toDto(ChineesPoepenEntity entity) {
@@ -66,10 +67,18 @@ public class ChineesPoepenConverter {
   }
 
   private static ChineesPoepen.Score convertRoundScores(ChineesPoepenRoundScore cps) {
-    return new ChineesPoepen.Score(cps.getClaimed(), cps.getWon(), cps.getPoints());
+    if (cps.getState() == FINISHED) {
+      return new ChineesPoepen.Score(cps.getClaimed(), cps.getPoints(), cps.getWon());
+    } else {
+      return new ChineesPoepen.Score(cps.getClaimed());
+    }
   }
 
   private static ChineesPoepenRoundScore convertRoundScores(ChineesPoepen.Score score) {
-    return new ChineesPoepenRoundScore(score.getScore(), score.getPointsCalled(), score.getPointsScored());
+    if (score.getPointsScored().isEmpty()) {
+      return new ChineesPoepenRoundScore(score.getPointsCalled());
+    } else {
+      return new ChineesPoepenRoundScore(score.getPointsCalled(), score.getPointsScored().get(), score.getScore().get());
+    }
   }
 }
